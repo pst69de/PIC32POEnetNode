@@ -307,8 +307,8 @@ void APP_Tasks ( void )
             // Turn Off LED
             LEDR_Clear;
             LEDB_Clear;
-            APP_LCD_PrintChar(3,10,'I');
-            appData.state = APP_STATE_POENET_INIT;
+            appData.state = APP_STATE_ERROR; // Blink Test
+            //appData.state = APP_STATE_POENET_INIT;
             break;
         case APP_STATE_POENET_INIT:
             POEnet_Node_Init( &appData.POEnet_NodeId, &appData.POEnetUID[0], &appData.time.Hours, &appData.time.Minutes, &appData.time.Seconds);

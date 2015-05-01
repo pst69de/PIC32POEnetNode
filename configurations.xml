@@ -13,7 +13,6 @@
         <itemPath>../src/user.hpp</itemPath>
         <itemPath>../src/POEnet.h</itemPath>
         <itemPath>../src/POEi2clcd.h</itemPath>
-        <itemPath>../src/POEusb.h</itemPath>
         <itemPath>../src/POEadc.h</itemPath>
         <itemPath>../src/POEdio.h</itemPath>
         <itemPath>../src/POEdiopins.h</itemPath>
@@ -70,7 +69,6 @@
         <itemPath>../src/configuration_bits.cpp</itemPath>
         <itemPath>../src/POEnet.cpp</itemPath>
         <itemPath>../src/POEi2clcd.c</itemPath>
-        <itemPath>../src/POEusb.c</itemPath>
         <itemPath>../src/POEadc.c</itemPath>
         <itemPath>../src/POEdio.c</itemPath>
       </logicalFolder>
@@ -138,7 +136,7 @@
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
-                  value="..\src\tinyxml2;..\..\..\..\v1_03\framework"/>
+                  value="..\src;..\src\tinyxml2;..\..\..\..\v1_03\framework"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="false"/>
@@ -217,7 +215,7 @@
         <property key="exceptions" value="true"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
-                  value="..\src\tinyxml2;..\..\..\..\v1_03\framework"/>
+                  value="..\src;..\src\tinyxml2;..\..\..\..\v1_03\framework"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="true"/>

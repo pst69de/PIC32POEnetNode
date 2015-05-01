@@ -22,7 +22,7 @@ extern "C" {
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include "system_config/sk_pic32_mx/system_config.h"
+#include "system_config.h"
     
 // Application States
 typedef enum {

@@ -18,7 +18,7 @@
 extern "C" {
 #endif
 
-#include "system_config/sk_pic32_mx/system_config.h"
+#include "system_config.h"
 
 #ifdef APP_ADC_ID
 

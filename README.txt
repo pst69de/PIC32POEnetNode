@@ -1,4 +1,10 @@
 ****************************************
+  Project wiki  
+****************************************
+
+http://wiki69.pst69.homeip.net/index.php/PIC32_POE.net_Node
+
+****************************************
   License 
 ****************************************
 This project is open source. 
@@ -65,14 +71,6 @@ int_VariableOffset_Unsupported.h
 int_VectorPriority_Default.h
 osal_impl_basic.h
 usart_LineControlMode_RXandTXCombined.h
-usb_ALL_Interrupt_Default.h
-usb_BDTFunctions_PIC32.h
-usb_ERR_InterruptStatus_Default.h
-usb_GEN_InterruptStatus_Default.h
-usb_LastDirection_Default.h
-usb_LastPingPong_Default.h
-usb_LastTransactionDetails_Default.h
-usb_PingPongMode_Unsupported.h
 
 License:
 ----------------------------------------
@@ -104,6 +102,8 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 Installation hints
 ****************************************
 
+see actual version on http://wiki69.pst69.homeip.net/index.php/PIC32_POE.net_Node
+
 Source directory of a typical MPLABX project using MPLAB Harmony libraries.
 
 Install MPLAB Harmony as proposed in C:\microchip\harmony\vX_YZ.
@@ -134,4 +134,4 @@ compiler_errors.txt, for resolving compiler issues later on
 Further Infomation
 ****************************************
 
-see http://wiki69.pst69.homeip.net/index.php/PIC32_USB_USART_Controller
+see http://wiki69.pst69.homeip.net/index.php/PIC32_POE.net_Node
