@@ -257,16 +257,16 @@ bool APP_CheckTimer (void) {
 // UART routines 
 // INT Handling Read
 void APP_UART_Read(void) {
-    APP_LCD_PrintChar(0,18,'*');
+    APP_LCD_PrintChar(0,10,'*');
     while (PLIB_USART_ReceiverDataIsAvailable(APP_UART_RX_ID)) {
         uint8_t readByte = PLIB_USART_ReceiverByteReceive(APP_UART_RX_ID);
         appData.UART_INPUT_BUF[appData.UART_INPUT_IDX++] = readByte;
-        APP_LCD_PrintChar(3,5,'R');
-        APP_LCD_WriteSize(3,6,appData.UART_INPUT_IDX);
+        // APP_LCD_PrintChar(0,10,'R');
+        APP_LCD_WriteSize(0,11,appData.UART_INPUT_IDX);
         // POE.net: zero/LF is sent for termination
         if (!readByte | (readByte == 10)) {
             appData.UART_INPUT_SIZE = appData.UART_INPUT_IDX;
-            APP_LCD_PrintChar(0,18,'R');
+            APP_LCD_PrintChar(0,10,'R');
         }
     }
 }
@@ -275,16 +275,16 @@ void APP_UART_Read(void) {
 void APP_UART_Write(void) {
     if (appData.UART_OUTPUT_IDX == appData.UART_OUTPUT_SIZE) {
         PLIB_USART_TransmitterDisable(APP_UART_TX_ID);
-        APP_LCD_PrintChar(0,19,'T');
-        APP_LCD_PrintChar(3,0,'T');
-        APP_LCD_WriteSize(3,1,appData.UART_OUTPUT_IDX);
+        APP_LCD_PrintChar(0,15,'T');
+        APP_LCD_WriteSize(0,16,appData.UART_OUTPUT_IDX);
         appData.UART_OUTPUT_SIZE = 0;
         appData.UART_OUTPUT_IDX = 0;
     }
     if (appData.UART_OUTPUT_SIZE > 0) {
-        APP_LCD_PrintChar(0,19,'*');
+        APP_LCD_PrintChar(0,15,'*');
         if (!PLIB_USART_TransmitterBufferIsFull(APP_UART_TX_ID) & (appData.UART_OUTPUT_IDX < appData.UART_OUTPUT_SIZE)) {
             PLIB_USART_TransmitterByteSend(APP_UART_TX_ID, appData.UART_OUTPUT_BUF[ appData.UART_OUTPUT_IDX++]);
+            APP_LCD_WriteSize(0,16,appData.UART_OUTPUT_IDX);
         }
     }
 }
@@ -307,8 +307,8 @@ void APP_Tasks ( void )
             // Turn Off LED
             LEDR_Clear;
             LEDB_Clear;
-            appData.state = APP_STATE_ERROR; // Blink Test
-            //appData.state = APP_STATE_POENET_INIT;
+            //appData.state = APP_STATE_ERROR; // Blink Test
+            appData.state = APP_STATE_POENET_INIT;
             break;
         case APP_STATE_POENET_INIT:
             POEnet_Node_Init( &appData.POEnet_NodeId, &appData.POEnetUID[0], &appData.time.Hours, &appData.time.Minutes, &appData.time.Seconds);
@@ -431,8 +431,7 @@ void APP_Tasks ( void )
         // POE.net input phase
         case APP_STATE_POENET_INPUT:
             if (APP_CheckTimer()) { break; }
-            APP_LCD_PrintChar(3,15,'*');
-            APP_LCD_PrintChar(3,16,' ');
+            APP_LCD_PrintChar(0,14,'*');
 #ifdef APP_USE_UART
             // UART may be Secondary, so pass Input as compiled
             // only if there is no USB processing needed
@@ -448,7 +447,6 @@ void APP_Tasks ( void )
                 // pass to INPUTReady
                 appData.state = APP_STATE_POENET_INPUT_READY;
 #endif
-                APP_LCD_PrintChar(3,15,'A');
                 break;
             }
 #endif // of ifdef APP_USE_UART
@@ -456,7 +454,7 @@ void APP_Tasks ( void )
         // POE.net input buffer filled
         case APP_STATE_POENET_INPUT_READY:
             if (APP_CheckTimer()) { break; }
-            APP_LCD_PrintChar(3,16,appData.POEnetPrimInputBuf[0]);
+            APP_LCD_PrintChar(0,14,'#');
             switch (appData.POEnetPrimInputBuf[0]) {
                 case 'U':
                     //POE.net Message -> pass to interpreter
@@ -477,6 +475,9 @@ void APP_Tasks ( void )
                     break;
                 case 'B':
                     APP_LCD_Backlight = !APP_LCD_Backlight;
+                    ClearBuffer(&appData.POEnetPrimInputBuf[0]);
+                    appData.POEnetPrimInputSize = 0;
+                    appData.POEnetPrimInputIdx = 0;
                     appData.LCD_Return_AppState = APP_STATE_POENET_INPUT;
                     appData.state = APP_LCD_UPDATE;
                     break;
@@ -492,7 +493,6 @@ void APP_Tasks ( void )
         // POE.net command interpretation
         case APP_STATE_POENET_COMMAND:
             if (APP_CheckTimer()) { break; }
-            APP_LCD_PrintChar(3,17,'C');
             // Handle Error
             if (POEnet_GetError(&appData.POEnetXMLError[0])) {
                 APP_LCD_Print( 1, 7, &POEnet_error[0]);

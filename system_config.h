@@ -167,14 +167,15 @@ extern "C" {
 // UART RX Port
 #define APP_UART_RX_PORTS_ID      PORTS_ID_0
 #define APP_UART_RX_PORT_CHANNEL  PORT_CHANNEL_B
-#define APP_UART_RX_PORT_PIN      PORTS_BIT_POS_5
-#define APP_UART_RX_REMAP_PIN     INPUT_PIN_RPB5
+#define APP_UART_RX_PORT_PIN      PORTS_BIT_POS_11
+#define APP_UART_RX_REMAP_PIN     INPUT_PIN_RPB11
 #define APP_UART_RX_REMAP_FUNC    INPUT_FUNC_U2RX
 // UART RX Module (keep the same if using the same module for RX & TX)
 #define APP_UART_RX_BAUD          9600
 #define APP_UART_RX_MODE          USART_8N1
 #define APP_UART_RX_OPER          USART_ENABLE_TX_RX_USED // no flow control
 #define APP_UART_RX_HAND          USART_HANDSHAKE_MODE_SIMPLEX // no flow control
+#define APP_UART_RX_INV           // inverse signalling, due to optocoupler inversion H11L1
 // general RX config
 #define APP_UART_RX_BUFFER_SIZE   APP_BUFFER_SIZE
 
@@ -192,8 +193,8 @@ extern "C" {
 #define APP_UART_TX_ID            APP_UART_RX_ID
 #define APP_UART_TX_PORTS_ID      PORTS_ID_0
 #define APP_UART_TX_PORT_CHANNEL  PORT_CHANNEL_B
-#define APP_UART_TX_PORT_PIN      PORTS_BIT_POS_14
-#define APP_UART_TX_REMAP_PIN     OUTPUT_PIN_RPB14
+#define APP_UART_TX_PORT_PIN      PORTS_BIT_POS_10
+#define APP_UART_TX_REMAP_PIN     OUTPUT_PIN_RPB10
 #define APP_UART_TX_REMAP_FUNC    OUTPUT_FUNC_U2TX
 // UART TX Module (keep the same if using the same module for RX & TX)
 #define APP_UART_TX_BAUD          APP_UART_RX_BAUD
@@ -216,15 +217,25 @@ extern "C" {
 #define APP_ADC1_PIN           PORTS_BIT_POS_15
 #define APP_ADC1_AIPIN         PORTS_ANALOG_PIN_9
 // 2nd analog input pin (maybe defined)
-#define APP_ADC2_INPUT_POS     ADC_INPUT_POSITIVE_AN11
+#define APP_ADC2_INPUT_POS     ADC_INPUT_POSITIVE_AN10
 #define APP_ADC2_PORTS_ID      PORTS_ID_0
 #define APP_ADC2_PORT_CHANNEL  PORT_CHANNEL_B
-#define APP_ADC2_PIN           PORTS_BIT_POS_13
-#define APP_ADC2_AIPIN         PORTS_ANALOG_PIN_11
+#define APP_ADC2_PIN           PORTS_BIT_POS_14
+#define APP_ADC2_AIPIN         PORTS_ANALOG_PIN_10
 // 3rd analog input pin (maybe defined)
 #undef  APP_ADC3_INPUT_POS
+//#define APP_ADC3_INPUT_POS     ADC_INPUT_POSITIVE_AN11
+//#define APP_ADC3_PORTS_ID      PORTS_ID_0
+//#define APP_ADC3_PORT_CHANNEL  PORT_CHANNEL_B
+//#define APP_ADC3_PIN           PORTS_BIT_POS_13
+//#define APP_ADC3_AIPIN         PORTS_ANALOG_PIN_11
 // 4th analog input pin (maybe defined)
 #undef  APP_ADC4_INPUT_POS
+//#define APP_ADC4_INPUT_POS     ADC_INPUT_POSITIVE_AN12
+//#define APP_ADC4_PORTS_ID      PORTS_ID_0
+//#define APP_ADC4_PORT_CHANNEL  PORT_CHANNEL_B
+//#define APP_ADC4_PIN           PORTS_BIT_POS_12
+//#define APP_ADC4_AIPIN         PORTS_ANALOG_PIN_12
 #else
 // used as indicator for data polling
 #define APP_ADC_NUM_PINS       0
@@ -242,7 +253,7 @@ extern "C" {
 #define APP_DO_1_OD
 #define APP_DO_2         DIO_PIN_B3
 #define APP_DO_2_OD
-#undef APP_DO_3
+#undef  APP_DO_3
 #define APP_DO_3_OD
 #undef  APP_DO_4
 #define APP_DO_4_OD

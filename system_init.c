@@ -86,6 +86,9 @@ void UART_Initialize(void) {
     PLIB_USART_BaudRateSet(APP_UART_RX_ID, APP_PBCLK_FREQ, APP_UART_RX_BAUD);
     // Select 8 data bits, No parity and one stop bit
     PLIB_USART_LineControlModeSelect(APP_UART_RX_ID, APP_UART_RX_MODE);
+#ifdef APP_UART_RX_INV
+    PLIB_USART_ReceiverIdleStateLowEnable(APP_UART_RX_ID);
+#endif
     // vv TX on same UART
     PLIB_USART_TransmitterInterruptModeSelect(APP_UART_TX_ID, USART_TRANSMIT_FIFO_EMPTY);
     // ^^ TX on same UART
