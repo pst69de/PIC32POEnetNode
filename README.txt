@@ -106,21 +106,37 @@ see actual version on http://wiki69.pst69.homeip.net/index.php/PIC32_POE.net_Nod
 
 Source directory of a typical MPLABX project using MPLAB Harmony libraries.
 
-Install MPLAB Harmony as proposed in C:\microchip\harmony\vX_YZ.
-Make up projects folder C:\microchip\harmony.
-Add the project folder PIC32USBUSARTCtl to the projects folder (like C:\microchip\harmony\projects\PIC32USBUSARTCtl).
-Add an framework folder to your project (like C:\microchip\harmony\projects\PIC32USBUSARTCtl\framework).
-Create an empty MPLABX project at your framework folder. This creates a MPLABX folder (like C:\microchip\harmony\projects\PIC32USBUSARTCtl\framework\PIC32USBUSARTCtl.X).
-Create the repository folder src (like C:\microchip\harmony\projects\PIC32USBUSARTCtl\framework\src).
-Clone the repository to the src folder.
-
-The configuration.xml should be copied to C:\microchip\harmony\projects\PIC32USBUSARTCtl\framework\PIC32USBUSARTCtl.X\nbproject. Or set up the MPLABX project in equivalent way. If copying the configuration.xml to the nbproject folder results in an unusable project (with "errors while reading xml") the private folder beneath the nbproject folder should be renamed or deleted. 
-
-The files contained in harmony_mods should be copied to their respective places in the MPLAB Harmony library. In my actual installation these are:
-C:\microchip\harmony\v1_03\framework\peripheral\int\templates
-C:\microchip\harmony\v1_03\framework\peripheral\usart\templates
-C:\microchip\harmony\v1_03\framework\peripheral\usb\templates
-C:\microchip\harmony\v1_03\framework\osal\src
+* Assumption on environment
+** Windows 7
+*** "C:\microchip\harmony" = "&gt;harmony&lt;"
+*** Installation of Microchip Harmony library (in Version 1.03) at "&gt;harmony&lt;\v1_03"
+*** Projects folder at "&gt;harmony&lt;\projects" = "&gt;projects&lt;"
+* Startup of project
+** Create folder "&gt;projects&lt;\PIC32POEnetNode"
+** Create subfolder "&gt;projects&lt;\PIC32POEnetNode\framework"
+** Open MPLABX
+*** Create empty project
+*** "Choose Project" "Microchip Embedded > Standalone Project"
+*** "Select Device" Family "32-bit MCUs (PIC32)" your Device (mine is a "PIC32MX250F128B")
+*** "Select Tool", mine is a "Microstick II" which is coded "Starter Kits (PKOB)" within the "Microchip Starter Kits" Group
+*** "Select Compiler", as mentioned "XC32 (v1.34) ..."
+*** "Select Project Name and Folder" 
+*** Project Name: PIC32POEnetNode
+*** Project Location: "&gt;projects&lt;\PIC32POEnetNode\framework"
+*** Check "Set as main Project"
+*** Check "Overwrite existing project"
+*** Pick Encoding "UTF-8" 
+*** "Finish"
+*** Close MPLAB X
+* Download Source
+** from [https://github.com/pst69de/PIC32POEnetNode GitHub pst69de/PIC32POEnetNode] to "&gt;projects&lt;\PIC32POEnetNode\framework\src" 
+** File "&gt;projects&lt;\PIC32POEnetNode\framework\src\configuration.xml" should be copied over "&gt;projects&lt;\PIC32POEnetNode\framework\PIC32POEnetNode.X\nbproject\configuration.xml"
+*** if there is a problem with Loading xml after opening MPLAB X again, then delete the contents of &gt;projects&lt;\PIC32POEnetNode\framework\PIC32POEnetNode.X\nbproject\private"
+*** also, check for different settings you made with the empty project in respect to the contents of my configuration as shown above
+** Files under "&gt;projects&lt;\PIC32POEnetNode\framework\src\harmony_mods" should replace similar found files under "&gt;harmony&lt;\v1_03\framework\peripheral"
+*** maybe in future there will be a subrepository patching to resolve this more cleanly
+* Working with source
+** in source file configuration_bits.cpp there is to define a device individual "#pragma config USERID = 0x1234u" identification, as this used to reidentify the location or usage by the master
 
 ****************************************
 Casual files

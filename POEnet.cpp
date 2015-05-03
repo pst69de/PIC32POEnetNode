@@ -123,11 +123,52 @@ void POEnet_GetNewNodeId() {
 }
 
 void POEnet_DescribeNode() {
+    // Test an insertion
+    //POEnetCommand.RootElement()->InsertEndChild( POEnetCommand.NewElement(&POEnet_noop[0]));
     // copy all elements of POEnetNode.RootElement() to POEnetCommand.RootElement()
     tinyxml2::XMLElement *anElement;
+    tinyxml2::XMLElement *copiedElement;
+    const tinyxml2::XMLAttribute *anAttribute;
     anElement = POEnetNode.RootElement()->FirstChildElement();
     while (anElement) {
-        POEnetCommand.RootElement()->InsertEndChild( anElement->ShallowClone( &POEnetCommand));
+        //vvv doesn't work as expected
+        //POEnetCommand.RootElement()->InsertEndChild( anElement->ShallowClone( &POEnetCommand));
+        copiedElement = POEnetCommand.NewElement( anElement->Name());
+        // POETODO: copy attributes
+        //copiedElement->SetAttribute( &POEnet_noop[0], 0);
+        anAttribute = anElement->FirstAttribute();
+        copiedElement->SetAttribute( anAttribute->Name(), anAttribute->Value());
+        anAttribute = anAttribute->Next();
+        copiedElement->SetAttribute( anAttribute->Name(), anAttribute->Value());
+        /* it seems getting a to long result on dirstributing all attributes
+         * the id and value maybe enough on a node capability questionaire
+         * we can post other properties on a specific interrogation
+        if (!strcmp(anElement->Name(), &POEnet_analog[0])) {
+            copiedElement->SetAttribute( &POEnet_noop[0], 0);
+            //anAttribute = anAttribute->Next();
+            //copiedElement->SetAttribute( anAttribute->Name(), &POEnet_noop[0]);
+        }
+        if (!strcmp(anElement->Name(), &POEnet_digital[0])) {
+            copiedElement->SetAttribute( &POEnet_noop[0], 0);
+            //anAttribute = anAttribute->Next();
+            //copiedElement->SetAttribute( anAttribute->Name(), anAttribute->Value());
+            //anAttribute = anAttribute->Next();
+            //copiedElement->SetAttribute( anAttribute->Name(), anAttribute->Value());
+        }
+        if (!strcmp(anElement->Name(), &POEnet_switch[0])) {
+            copiedElement->SetAttribute( &POEnet_noop[0], 0);
+            //anAttribute = anAttribute->Next();
+            //copiedElement->SetAttribute( anAttribute->Name(), anAttribute->Value());
+            //anAttribute = anAttribute->Next();
+            //copiedElement->SetAttribute( anAttribute->Name(), anAttribute->Value());
+        }
+        // */
+        /*
+        for( anAttribute = anElement->FirstAttribute(); anAttribute != 0; anAttribute = anAttribute->Next() ) {
+            copiedElement->SetAttribute( anAttribute->Name(), anAttribute->Value());
+        }
+        // */
+        POEnetCommand.RootElement()->InsertEndChild( copiedElement);
         anElement = anElement->NextSiblingElement();
     }
 }
@@ -205,7 +246,9 @@ void POEnet_Interpret(const char *buffer) {
         } else if (!strcmp(POEnetCommand.RootElement()->Name(), &POEnet_net[0])) {
             POEnet_GetNewNodeId();
         } else if (!strcmp(POEnetCommand.RootElement()->Name(), &POEnet_node[0])) {
-            POEnet_DescribeNode();
+            if (POEnetCommand.RootElement()->IntAttribute(&POEnet_id[0]) == *node_id) {
+                POEnet_DescribeNode();
+            }
         } else if (!strcmp(POEnetCommand.RootElement()->Name(), &POEnet_time[0])) {
             POEnet_SetTime();
         } else if (!strcmp(POEnetCommand.RootElement()->Name(), &POEnet_analog[0])) {

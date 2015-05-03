@@ -105,16 +105,16 @@ void APP_Initialize ( void )
 #ifdef APP_ADC3_INPUT_POS
     appData.ADC_PinValue[2] = 0;
     appData.ADC_Numerator[2] = 36.3f;
-    appData.ADC_Denominator[2] = 1024f;
+    appData.ADC_Denominator[2] = 1024.0f;
     appData.ADC_Value[2] = 0.0f;
-    strcpy(&appData.ADC_Unit[2], "V");
+    strcpy(&appData.ADC_Unit[2][0], "V");
 #endif // ifdef APP_ADC3_INPUT_POS
 #ifdef APP_ADC4_INPUT_POS
     appData.ADC_PinValue[3] = 0;
     appData.ADC_Numerator[3] = 36.3f;
-    appData.ADC_Denominator[3] = 1024f;
+    appData.ADC_Denominator[3] = 1024.0f;
     appData.ADC_Value[3] = 0.0f;
-    strcpy(&appData.ADC_Unit[3], "V");
+    strcpy(&appData.ADC_Unit[3][0], "V");
 #endif // ifdef APP_ADC4_INPUT_POS
 #endif // ifdef APP_USE_ADC
 #ifdef APP_USE_DIO
@@ -263,7 +263,7 @@ void APP_UART_Read(void) {
         appData.UART_INPUT_BUF[appData.UART_INPUT_IDX++] = readByte;
         // APP_LCD_PrintChar(0,10,'R');
         APP_LCD_WriteSize(0,11,appData.UART_INPUT_IDX);
-        // POE.net: zero/LF is sent for termination
+        // POE.net: LF/zero is sent for termination
         if (!readByte | (readByte == 10)) {
             appData.UART_INPUT_SIZE = appData.UART_INPUT_IDX;
             APP_LCD_PrintChar(0,10,'R');
@@ -276,7 +276,9 @@ void APP_UART_Write(void) {
     if (appData.UART_OUTPUT_IDX == appData.UART_OUTPUT_SIZE) {
         PLIB_USART_TransmitterDisable(APP_UART_TX_ID);
         APP_LCD_PrintChar(0,15,'T');
-        APP_LCD_WriteSize(0,16,appData.UART_OUTPUT_IDX);
+        // after disabling the transmitter the interrupt will call a second time,
+        // nulling the transmitted bytes :(
+        if (appData.UART_OUTPUT_IDX > 0) { APP_LCD_WriteSize(0,16,appData.UART_OUTPUT_IDX); }
         appData.UART_OUTPUT_SIZE = 0;
         appData.UART_OUTPUT_IDX = 0;
     }
@@ -385,11 +387,8 @@ void APP_Tasks ( void )
                     APP_LCD_PrintChar(0,7,numChar[appData.time.Seconds / 10]);
                     APP_LCD_Print( 1, 0, "POEnet UID____");
                     APP_LCD_Print( 1, 10, &appData.POEnetUID[0]);
-                    APP_LCD_Print( 2, 0, "00.0@ 00.0@ ****####");
-#ifdef APP_USE_UART
-                    APP_LCD_Print( 3, 5, "UART");
-#endif // ifdef APP_USE_UART
-                    APP_LCD_Print( 3, 0, "LCD");
+                    APP_LCD_Print( 2, 0, "00.0@@ 00.0@@ %%% *#");
+                    APP_LCD_Print( 3, 0, "00.0@@ 00.0@@ %%% *#");
                     appData.LCD_Return_AppState = appData.LCD_Init_Return;
                     appData.state = APP_LCD_UPDATE;
                 } else {
@@ -415,12 +414,14 @@ void APP_Tasks ( void )
         // POE.net reset message
         case APP_STATE_POENET_RESET:
 #ifdef APP_POEnet_SECONDARY
-            strcpy(&appData.POEnetSecOutputBuf[0], "U<reset/>\n");
-            appData.POEnetSecOutputSize = strlen(&appData.POEnetSecOutputBuf[0]) + 1;
+            strcpy(&appData.POEnetSecOutputBuf[0], "U<reset/>");
+            appData.POEnetSecOutputSize = strlen(&appData.POEnetSecOutputBuf[0]);
+            appData.POEnetSecOutputBuf[appData.POEnetSecOutputSize++] = APP_UART_TERMINATOR;
             appData.POEnetSecOutputIdx = 0;
 #else // ifdef APP_POEnet_SECONDARY
-            strcpy(&appData.POEnetPrimOutputBuf[0], "U<reset/>\n");
-            appData.POEnetPrimOutputSize = strlen(&appData.POEnetPrimOutputBuf[0]) + 1;
+            strcpy(&appData.POEnetPrimOutputBuf[0], "U<reset/>");
+            appData.POEnetPrimOutputSize = strlen(&appData.POEnetPrimOutputBuf[0]);
+            appData.POEnetPrimOutputBuf[appData.POEnetPrimOutputSize++] = APP_UART_TERMINATOR;
             appData.POEnetPrimOutputIdx = 0;            
 #endif // else APP_POEnet_SECONDARY
             // POETODO: try a const_cast to avoid warning http://en.cppreference.com/w/cpp/language/const_cast
@@ -439,7 +440,7 @@ void APP_Tasks ( void )
             // maybe there is the need of a more advanced state switching 
             // as USB inputs override backtransmissions from serial (to be send by USB)
             // *****************************************************************
-            if ((appData.state == APP_STATE_POENET_INPUT) & (appData.UART_INPUT_SIZE)) {
+            if ((appData.state == APP_STATE_POENET_INPUT) & (appData.UART_INPUT_SIZE > 0)) {
 #ifdef APP_POEnet_SECONDARY
                 // pass to Buffer pass
                 appData.state = APP_STATE_POENET_PASS;
@@ -465,30 +466,24 @@ void APP_Tasks ( void )
                     break;
                 case 'T':
                     APP_LCD_ClearLine(3);
-                    APP_LCD_Print(3, 0, &appData.POEnetPrimInputBuf[1]);
-                    ClearBuffer(&appData.POEnetPrimInputBuf[0]);
-                    appData.POEnetPrimInputSize = 0;
-                    appData.POEnetPrimInputIdx = 0;
                     // set the text message
+                    APP_LCD_Print(3, 0, &appData.POEnetPrimInputBuf[1]);
                     appData.LCD_Return_AppState = APP_STATE_POENET_INPUT;
                     appData.state = APP_LCD_UPDATE;
                     break;
                 case 'B':
                     APP_LCD_Backlight = !APP_LCD_Backlight;
-                    ClearBuffer(&appData.POEnetPrimInputBuf[0]);
-                    appData.POEnetPrimInputSize = 0;
-                    appData.POEnetPrimInputIdx = 0;
                     appData.LCD_Return_AppState = APP_STATE_POENET_INPUT;
                     appData.state = APP_LCD_UPDATE;
                     break;
                 default:
                     // ignore Message
-                    ClearBuffer(&appData.POEnetPrimInputBuf[0]);
-                    appData.POEnetPrimInputSize = 0;
-                    appData.POEnetPrimInputIdx = 0;
                     appData.state = APP_STATE_POENET_INPUT;
                     break;
             }
+            ClearBuffer(&appData.POEnetPrimInputBuf[0]);
+            appData.POEnetPrimInputSize = 0;
+            appData.POEnetPrimInputIdx = 0;
             break;
         // POE.net command interpretation
         case APP_STATE_POENET_COMMAND:
@@ -509,8 +504,9 @@ void APP_Tasks ( void )
             appData.POEnetPrimOutputBuf[0] = 'U';
             POEnet_Output(&appData.POEnetPrimOutputBuf[1]);
             appData.POEnetPrimOutputSize = strlen(&appData.POEnetPrimOutputBuf[0]);
-            appData.POEnetPrimOutputBuf[appData.POEnetPrimOutputSize] = '\n';
-            appData.POEnetPrimOutputSize++;
+            appData.POEnetPrimOutputBuf[appData.POEnetPrimOutputSize++] = APP_UART_TERMINATOR;
+            // c# serialPort needs a kicker to put the LF in the buffer 
+            appData.POEnetPrimOutputBuf[appData.POEnetPrimOutputSize++] = '\0';
             appData.POEnetPrimOutputIdx = 0;
             appData.LCD_Return_AppState = APP_STATE_POENET_OUTPUT_PREPARE;
             appData.state = APP_LCD_UPDATE;
@@ -518,7 +514,6 @@ void APP_Tasks ( void )
         // POE.net output phase
         case APP_STATE_POENET_OUTPUT_PREPARE:
             if (APP_CheckTimer()) { break; }
-            APP_LCD_PrintChar(3,18,'T');
 #ifdef APP_POEnet_SECONDARY
             // USB UART Bridge -> pass to UART
             //APP_LCD_PrintChar(2,6,'>');
@@ -550,7 +545,6 @@ void APP_Tasks ( void )
 #ifdef APP_POEnet_SECONDARY
         case APP_STATE_POENET_PASS:
             if (APP_CheckTimer()) { break; }
-            APP_LCD_PrintChar(3,19,'X');
             strcpy( &appData.POEnetSecOutputBuf[0], &appData.POEnetSecInputBuf[0]);
             appData.POEnetSecOutputSize = appData.POEnetSecInputSize;
             // POE.net messages usually terminate with zero \0
@@ -570,69 +564,69 @@ void APP_Tasks ( void )
 #ifdef APP_DI_1
                 appData.DI_Value[0] = DIO_ReadDI(1);
                 if (appData.DI_Value[0]) {
-                    APP_LCD_PrintChar(2,16,appData.DI_HiValue[0][0]);
+                    APP_LCD_PrintChar(2,19,appData.DI_HiValue[0][0]);
                 } else {
-                    APP_LCD_PrintChar(2,16,appData.DI_LoValue[0][0]);
+                    APP_LCD_PrintChar(2,19,appData.DI_LoValue[0][0]);
                 }
 #endif // ifdef APP_DI_1
 #ifdef APP_DI_2
                 appData.DI_Value[1] = DIO_ReadDI(2);
                 if (appData.DI_Value[1]) {
-                    APP_LCD_PrintChar(2,17,appData.DI_HiValue[1][0]);
+                    APP_LCD_PrintChar(3,19,appData.DI_HiValue[1][0]);
                 } else {
-                    APP_LCD_PrintChar(2,17,appData.DI_LoValue[1][0]);
+                    APP_LCD_PrintChar(3,19,appData.DI_LoValue[1][0]);
                 }
 #endif // ifdef APP_DI_2
 #ifdef APP_DI_3
                 appData.DI_Value[2] = DIO_ReadDI(3);
                 if (appData.DI_Value[2]) {
-                    APP_LCD_PrintChar(2,18,appData.DI_HiValue[2][0]);
+                    APP_LCD_PrintChar(2,19,appData.DI_HiValue[2][0]);
                 } else {
-                    APP_LCD_PrintChar(2,18,appData.DI_LoValue[2][0]);
+                    APP_LCD_PrintChar(2,19,appData.DI_LoValue[2][0]);
                 }
 #endif // ifdef APP_DI_3
 #ifdef APP_DI_4
                 appData.DI_Value[3] = DIO_ReadDI(4);
                 if (appData.DI_Value[3]) {
-                    APP_LCD_PrintChar(2,19,appData.DI_HiValue[3][0]);
+                    APP_LCD_PrintChar(3,19,appData.DI_HiValue[3][0]);
                 } else {
-                    APP_LCD_PrintChar(2,19,appData.DI_LoValue[3][0]);
+                    APP_LCD_PrintChar(3,19,appData.DI_LoValue[3][0]);
                 }
 #endif // ifdef APP_DI_4
 #ifdef APP_DO_1
                 if (appData.DO_Value[0]) {
                     DIO_SetDO(1);
-                    APP_LCD_PrintChar(2,12,appData.DO_HiValue[0][0]);
+                    APP_LCD_PrintChar(2,18,appData.DO_HiValue[0][0]);
                 } else {
                     DIO_ClearDO(1);
-                    APP_LCD_PrintChar(2,12,appData.DO_LoValue[0][0]);
+                    APP_LCD_PrintChar(2,18,appData.DO_LoValue[0][0]);
                 }
 #endif // ifdef APP_DO_1
 #ifdef APP_DO_2
                 if (appData.DO_Value[1]) {
                     DIO_SetDO(2);
-                    APP_LCD_PrintChar(2,13,appData.DO_HiValue[1][0]);
+                    APP_LCD_PrintChar(3,18,appData.DO_HiValue[1][0]);
                 } else {
                     DIO_ClearDO(2);
-                    APP_LCD_PrintChar(2,13,appData.DO_LoValue[1][0]);
+                    APP_LCD_PrintChar(3,18,appData.DO_LoValue[1][0]);
                 }
 #endif // ifdef APP_DO_2
 #ifdef APP_DO_3
                 if (appData.DO_Value[2]) {
                     DIO_SetDO(3);
-                    APP_LCD_PrintChar(2,14,appData.DO_HiValue[2][0]);
+                    APP_LCD_PrintChar(2,18,appData.DO_HiValue[2][0]);
                 } else {
                     DIO_ClearDO(3);
-                    APP_LCD_PrintChar(2,14,appData.DO_LoValue[2][0]);
+                    APP_LCD_PrintChar(2,18,appData.DO_LoValue[2][0]);
                 }
 #endif // ifdef APP_DO_3
 #ifdef APP_DO_4
                 if (appData.DO_Value[3]) {
                     DIO_SetDO(4);
-                    APP_LCD_PrintChar(2,15,appData.DO_HiValue[3][0]);
+                    APP_LCD_PrintChar(3,18,appData.DO_HiValue[3][0]);
                 } else {
                     DIO_ClearDO(4);
-                    APP_LCD_PrintChar(2,15,appData.DO_LoValue[3][0]);
+                    APP_LCD_PrintChar(3,18,appData.DO_LoValue[3][0]);
                 }
 #endif // ifdef APP_DO_4
 #endif // ifdef APP_USE_DIO
@@ -675,14 +669,28 @@ void APP_Tasks ( void )
                 sprintf(&appData.ADC_Representation[appData.ADC_PinIdx - 1][0], "%.1f%s",appData.ADC_Value[appData.ADC_PinIdx - 1],&appData.ADC_Unit[appData.ADC_PinIdx - 1][0]);
 #ifdef APP_ADC1_INPUT_POS
                 if (appData.ADC_PinIdx == 1) {
+                    APP_LCD_Print(2, 0, &POEnet_empty[0]);
                     APP_LCD_Print(2, 0, &appData.ADC_Representation[0][0]);
-                } 
+                }
 #endif // ifdef APP_ADC1_INPUT_POS
 #ifdef APP_ADC2_INPUT_POS
                 if (appData.ADC_PinIdx == 2) {
-                    APP_LCD_Print(2, 6, &appData.ADC_Representation[1][0]);
+                    APP_LCD_Print(2, 7, &POEnet_empty[0]);
+                    APP_LCD_Print(2, 7, &appData.ADC_Representation[1][0]);
                 }
 #endif // ifdef APP_ADC2_INPUT_POS
+#ifdef APP_ADC3_INPUT_POS
+                if (appData.ADC_PinIdx == 3) {
+                    APP_LCD_Print(3, 0, &POEnet_empty[0]);
+                    APP_LCD_Print(3, 0, &appData.ADC_Representation[2][0]);
+                }
+#endif // ifdef APP_ADC3_INPUT_POS
+#ifdef APP_ADC4_INPUT_POS
+                if (appData.ADC_PinIdx == 4) {
+                    APP_LCD_Print(3, 7, &POEnet_empty[0]);
+                    APP_LCD_Print(3, 7, &appData.ADC_Representation[3][0]);
+                }
+#endif // ifdef APP_ADC4_INPUT_POS
                 appData.state = appData.ADC_Return_AppState;
             }
             break;

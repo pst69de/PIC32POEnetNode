@@ -162,6 +162,7 @@ extern "C" {
 
 // defs UART 1/2 for COM
 #ifdef APP_USE_UART
+#define APP_UART_TERMINATOR       '\n'
 // Defs UART RX (is unit 2)
 #define APP_UART_RX_ID            USART_ID_2
 // UART RX Port
@@ -206,7 +207,7 @@ extern "C" {
 #endif // of ifdef APP_USE_UART
 
 #ifdef APP_USE_ADC
-#define APP_ADC_NUM_PINS       2
+#define APP_ADC_NUM_PINS       4
 #define APP_ADC_ID             ADC_ID_1
 #define APP_ADC_CCLK_BASE      APP_PBCLK_FREQ
 #define APP_ADC_CCLK_RATE      4000000L
@@ -223,19 +224,19 @@ extern "C" {
 #define APP_ADC2_PIN           PORTS_BIT_POS_14
 #define APP_ADC2_AIPIN         PORTS_ANALOG_PIN_10
 // 3rd analog input pin (maybe defined)
-#undef  APP_ADC3_INPUT_POS
-//#define APP_ADC3_INPUT_POS     ADC_INPUT_POSITIVE_AN11
-//#define APP_ADC3_PORTS_ID      PORTS_ID_0
-//#define APP_ADC3_PORT_CHANNEL  PORT_CHANNEL_B
-//#define APP_ADC3_PIN           PORTS_BIT_POS_13
-//#define APP_ADC3_AIPIN         PORTS_ANALOG_PIN_11
+//#undef  APP_ADC3_INPUT_POS
+#define APP_ADC3_INPUT_POS     ADC_INPUT_POSITIVE_AN11
+#define APP_ADC3_PORTS_ID      PORTS_ID_0
+#define APP_ADC3_PORT_CHANNEL  PORT_CHANNEL_B
+#define APP_ADC3_PIN           PORTS_BIT_POS_13
+#define APP_ADC3_AIPIN         PORTS_ANALOG_PIN_11
 // 4th analog input pin (maybe defined)
-#undef  APP_ADC4_INPUT_POS
-//#define APP_ADC4_INPUT_POS     ADC_INPUT_POSITIVE_AN12
-//#define APP_ADC4_PORTS_ID      PORTS_ID_0
-//#define APP_ADC4_PORT_CHANNEL  PORT_CHANNEL_B
-//#define APP_ADC4_PIN           PORTS_BIT_POS_12
-//#define APP_ADC4_AIPIN         PORTS_ANALOG_PIN_12
+//#undef  APP_ADC4_INPUT_POS
+#define APP_ADC4_INPUT_POS     ADC_INPUT_POSITIVE_AN12
+#define APP_ADC4_PORTS_ID      PORTS_ID_0
+#define APP_ADC4_PORT_CHANNEL  PORT_CHANNEL_B
+#define APP_ADC4_PIN           PORTS_BIT_POS_12
+#define APP_ADC4_AIPIN         PORTS_ANALOG_PIN_12
 #else
 // used as indicator for data polling
 #define APP_ADC_NUM_PINS       0
