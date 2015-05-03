@@ -1241,7 +1241,21 @@ void XMLAttribute::SetAttribute( const char* v )
 {
     _value.SetStr( v );
 #ifdef REFDATTRIBUTE
-    // POETODO: if ref'd Data present write through 
+    // POETODO: conversion for int 'n float types if needed
+    // if ref'd Data present write through
+    switch (_type) {
+        case 1:
+            strncpy((char*)_pvalue, v, _maxlen);
+            break;
+        //case 2:
+        //    *(int*)_pvalue = v;
+        //    break;
+        //case 3:
+        //    *(float*)_pvalue = (float)v;
+        //    break;
+        default:
+            break;
+    }
 #endif // ifdef REFDATTRIBUTE
 }
 
@@ -1252,7 +1266,20 @@ void XMLAttribute::SetAttribute( int v )
     XMLUtil::ToStr( v, buf, BUF_SIZE );
     _value.SetStr( buf );
 #ifdef REFDATTRIBUTE
-    // POETODO: if ref'd Data present write through 
+    // if ref'd Data present write through 
+    switch (_type) {
+        case 1:
+            strncpy((char*)_pvalue, &buf[0], _maxlen);
+            break;
+        case 2:
+            *(int*)_pvalue = v;
+            break;
+        case 3:
+            *(float*)_pvalue = (float)v;
+            break;
+        default:
+            break;
+    }
 #endif // ifdef REFDATTRIBUTE
 }
 
@@ -1263,7 +1290,20 @@ void XMLAttribute::SetAttribute( unsigned v )
     XMLUtil::ToStr( v, buf, BUF_SIZE );
     _value.SetStr( buf );
 #ifdef REFDATTRIBUTE
-    // POETODO: if ref'd Data present write through 
+    // if ref'd Data present write through 
+    switch (_type) {
+        case 1:
+            strncpy((char*)_pvalue, &buf[0], _maxlen);
+            break;
+        case 2:
+            *(int*)_pvalue = (int)v;
+            break;
+        case 3:
+            *(float*)_pvalue = (float)v;
+            break;
+        default:
+            break;
+    }
 #endif // ifdef REFDATTRIBUTE
 }
 
@@ -1274,7 +1314,20 @@ void XMLAttribute::SetAttribute( bool v )
     XMLUtil::ToStr( v, buf, BUF_SIZE );
     _value.SetStr( buf );
 #ifdef REFDATTRIBUTE
-    // POETODO: if ref'd Data present write through 
+    // if ref'd Data present write through 
+    switch (_type) {
+        case 1:
+            strncpy((char*)_pvalue, &buf[0], _maxlen);
+            break;
+        case 2:
+            *(int*)_pvalue = (int)v;
+            break;
+        case 3:
+            *(float*)_pvalue = (float)v;
+            break;
+        default:
+            break;
+    }
 #endif // ifdef REFDATTRIBUTE
 }
 
@@ -1284,7 +1337,20 @@ void XMLAttribute::SetAttribute( double v )
     XMLUtil::ToStr( v, buf, BUF_SIZE );
     _value.SetStr( buf );
 #ifdef REFDATTRIBUTE
-    // POETODO: if ref'd Data present write through 
+    // if ref'd Data present write through 
+    switch (_type) {
+        case 1:
+            strncpy((char*)_pvalue, &buf[0], _maxlen);
+            break;
+        case 2:
+            *(int*)_pvalue = (int)v;
+            break;
+        case 3:
+            *(float*)_pvalue = (float)v;
+            break;
+        default:
+            break;
+    }
 #endif // ifdef REFDATTRIBUTE
 }
 
@@ -1294,7 +1360,20 @@ void XMLAttribute::SetAttribute( float v )
     XMLUtil::ToStr( v, buf, BUF_SIZE );
     _value.SetStr( buf );
 #ifdef REFDATTRIBUTE
-    // POETODO: if ref'd Data present write through 
+    // if ref'd Data present write through 
+    switch (_type) {
+        case 1:
+            strncpy((char*)_pvalue, &buf[0], _maxlen);
+            break;
+        case 2:
+            *(int*)_pvalue = (int)v;
+            break;
+        case 3:
+            *(float*)_pvalue = v;
+            break;
+        default:
+            break;
+    }
 #endif // ifdef REFDATTRIBUTE
 }
 
