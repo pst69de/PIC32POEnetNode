@@ -30,6 +30,7 @@ extern const char POEnet_analog[];
 extern const char POEnet_value[];
 extern const char POEnet_numerator[];
 extern const char POEnet_denominator[];
+extern const char POEnet_offset[];
 extern const char POEnet_unit[];
 extern const char POEnet_digital[];
 extern const char POEnet_lovalue[];
@@ -42,7 +43,7 @@ extern const char POEnet_action[];
 
 void POEnet_Node_Init(int *id, char *name, int *hours, int *minutes, int *seconds);
 
-void POEnet_AddAnalog(int id, float *Value, float *numerator, float *denominator, char *unit);
+void POEnet_AddAnalog(int id, float *Value, float *numerator, float *denominator, float *offset, char *unit);
 void POEnet_AddDigital(int id, int *Value, char *loVal, char *hiVal);
 void POEnet_AddSwitch(int id, int *Value, char *loVal, char *hiVal);
 

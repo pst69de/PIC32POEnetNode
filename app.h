@@ -133,6 +133,7 @@ typedef struct
     int               ADC_PinValue[APP_ADC_NUM_PINS];
     float             ADC_Numerator[APP_ADC_NUM_PINS];
     float             ADC_Denominator[APP_ADC_NUM_PINS];
+    float             ADC_Offset[APP_ADC_NUM_PINS];
     float             ADC_Value[APP_ADC_NUM_PINS];
     char              ADC_Unit[APP_ADC_NUM_PINS][APP_STRING_SIZE];
     char              ADC_Representation[APP_ADC_NUM_PINS][APP_STRING_SIZE];

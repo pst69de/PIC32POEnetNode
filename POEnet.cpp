@@ -32,6 +32,7 @@ const char POEnet_analog[] = "analog";
 const char POEnet_value[] = "value";
 const char POEnet_numerator[] = "numerator";
 const char POEnet_denominator[] = "denominator";
+const char POEnet_offset[] = "offset";
 const char POEnet_unit[] = "unit";
 const char POEnet_digital[] = "digital";
 const char POEnet_lovalue[] = "lovalue";
@@ -60,13 +61,14 @@ void POEnet_Node_Init(int *id, char *name, int *hours, int *minutes, int *second
 }
 
 
-void POEnet_AddAnalog(int id, float *Value, float *numerator, float *denominator, char *unit) {
+void POEnet_AddAnalog(int id, float *Value, float *numerator, float *denominator, float *offset, char *unit) {
     tinyxml2::XMLElement *elemAnalog = POEnetNode.NewElement( &POEnet_analog[0]); 
 	// keep the order of id, value and others
     elemAnalog->SetAttribute(&POEnet_id[0], id);
     elemAnalog->SetAttribute(&POEnet_value[0], Value);
     elemAnalog->SetAttribute(&POEnet_numerator[0], numerator);
     elemAnalog->SetAttribute(&POEnet_denominator[0], denominator);
+    elemAnalog->SetAttribute(&POEnet_offset[0], offset);
     elemAnalog->SetAttribute(&POEnet_unit[0], unit, APP_STRING_SIZE);
     POEnetNode.RootElement()->InsertEndChild( elemAnalog);
 }
@@ -206,6 +208,14 @@ void POEnet_SetAnalog(tinyxml2::XMLElement *eleAnalog) {
                     myAnalog->SetAttribute( &POEnet_denominator[0], newValue);
                 }
             }
+            anElement = eleAnalog->FirstChildElement(&POEnet_offset[0]);
+            if (anElement) {
+                // found the denominator -> query for new value
+                if (anElement->QueryFloatText(&newValue) == tinyxml2::XML_SUCCESS) {
+                    // Only if resolvable value
+                    myAnalog->SetAttribute( &POEnet_offset[0], newValue);
+                }
+            }
             anElement = eleAnalog->FirstChildElement(&POEnet_unit[0]);
             if (anElement) {
                 // found the unit
@@ -237,6 +247,9 @@ void POEnet_GetAnalog(tinyxml2::XMLElement *eleAnalog) {
             eleAnalog->InsertEndChild( anElement);
             anElement = eleAnalog->GetDocument()->NewElement(&POEnet_denominator[0]);
             anElement->SetAttribute(&POEnet_value[0], myAnalog->Attribute(&POEnet_denominator[0]));
+            eleAnalog->InsertEndChild( anElement);
+            anElement = eleAnalog->GetDocument()->NewElement(&POEnet_offset[0]);
+            anElement->SetAttribute(&POEnet_value[0], myAnalog->Attribute(&POEnet_offset[0]));
             eleAnalog->InsertEndChild( anElement);
             anElement = eleAnalog->GetDocument()->NewElement(&POEnet_unit[0]);
             anElement->SetAttribute(&POEnet_value[0], myAnalog->Attribute(&POEnet_unit[0]));

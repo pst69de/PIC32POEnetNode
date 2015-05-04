@@ -93,12 +93,14 @@ void APP_Initialize ( void )
     appData.ADC_PinValue[0] = 0;
     appData.ADC_Numerator[0] = 36.3f;
     appData.ADC_Denominator[0] = 1024.0f;
+    appData.ADC_Offset[0] = 0.0f;
     appData.ADC_Value[0] = 0.0f;
     strcpy(&appData.ADC_Unit[0][0], "V");
 #ifdef APP_ADC2_INPUT_POS
     appData.ADC_PinValue[1] = 0;
     appData.ADC_Numerator[1] = 36.3f;
     appData.ADC_Denominator[1] = 1024.0f;
+    appData.ADC_Offset[1] = 0.0f;
     appData.ADC_Value[1] = 0.0f;
     strcpy(&appData.ADC_Unit[1][0], "V");
 #endif // ifdef APP_ADC2_INPUT_POS
@@ -106,6 +108,7 @@ void APP_Initialize ( void )
     appData.ADC_PinValue[2] = 0;
     appData.ADC_Numerator[2] = 36.3f;
     appData.ADC_Denominator[2] = 1024.0f;
+    appData.ADC_Offset[2] = 0.0f;
     appData.ADC_Value[2] = 0.0f;
     strcpy(&appData.ADC_Unit[2][0], "V");
 #endif // ifdef APP_ADC3_INPUT_POS
@@ -113,6 +116,7 @@ void APP_Initialize ( void )
     appData.ADC_PinValue[3] = 0;
     appData.ADC_Numerator[3] = 36.3f;
     appData.ADC_Denominator[3] = 1024.0f;
+    appData.ADC_Offset[3] = 0.0f;
     appData.ADC_Value[3] = 0.0f;
     strcpy(&appData.ADC_Unit[3][0], "V");
 #endif // ifdef APP_ADC4_INPUT_POS
@@ -316,16 +320,16 @@ void APP_Tasks ( void )
             POEnet_Node_Init( &appData.POEnet_NodeId, &appData.POEnetUID[0], &appData.time.Hours, &appData.time.Minutes, &appData.time.Seconds);
 #ifdef APP_USE_ADC
 #ifdef APP_ADC1_INPUT_POS
-            POEnet_AddAnalog(1,&appData.ADC_Value[0],&appData.ADC_Numerator[0],&appData.ADC_Denominator[0],&appData.ADC_Unit[0][0]);
+            POEnet_AddAnalog(1,&appData.ADC_Value[0],&appData.ADC_Numerator[0],&appData.ADC_Denominator[0],&appData.ADC_Offset[0],&appData.ADC_Unit[0][0]);
 #endif
 #ifdef APP_ADC2_INPUT_POS
-            POEnet_AddAnalog(2,&appData.ADC_Value[1],&appData.ADC_Numerator[1],&appData.ADC_Denominator[1],&appData.ADC_Unit[1][0]);
+            POEnet_AddAnalog(2,&appData.ADC_Value[1],&appData.ADC_Numerator[1],&appData.ADC_Denominator[1],&appData.ADC_Offset[0],&appData.ADC_Unit[1][0]);
 #endif
 #ifdef APP_ADC3_INPUT_POS
-            POEnet_AddAnalog(3,&appData.ADC_Value[2],&appData.ADC_Numerator[2],&appData.ADC_Denominator[2],&appData.ADC_Unit[2][0]);
+            POEnet_AddAnalog(3,&appData.ADC_Value[2],&appData.ADC_Numerator[2],&appData.ADC_Denominator[2],&appData.ADC_Offset[0],&appData.ADC_Unit[2][0]);
 #endif
 #ifdef APP_ADC4_INPUT_POS
-            POEnet_AddAnalog(4,&appData.ADC_Value[3],&appData.ADC_Numerator[3],&appData.ADC_Denominator[3],&appData.ADC_Unit[3][0]);
+            POEnet_AddAnalog(4,&appData.ADC_Value[3],&appData.ADC_Numerator[3],&appData.ADC_Denominator[3],&appData.ADC_Offset[0],&appData.ADC_Unit[3][0]);
 #endif
 #endif // ifdef APP_USE_ADC
 #ifdef APP_USE_DIO
@@ -665,7 +669,8 @@ void APP_Tasks ( void )
             if (ADC_ResultIfReady(&appData.ADC_PinValue[appData.ADC_PinIdx - 1])) {
                 appData.ADC_Value[appData.ADC_PinIdx - 1] = appData.ADC_PinValue[appData.ADC_PinIdx - 1] 
                                                           * appData.ADC_Numerator[appData.ADC_PinIdx - 1] 
-                                                          / appData.ADC_Denominator[appData.ADC_PinIdx - 1];
+                                                          / appData.ADC_Denominator[appData.ADC_PinIdx - 1]
+                                                          + appData.ADC_Offset[appData.ADC_PinIdx - 1];
                 sprintf(&appData.ADC_Representation[appData.ADC_PinIdx - 1][0], "%.1f%s",appData.ADC_Value[appData.ADC_PinIdx - 1],&appData.ADC_Unit[appData.ADC_PinIdx - 1][0]);
 #ifdef APP_ADC1_INPUT_POS
                 if (appData.ADC_PinIdx == 1) {
