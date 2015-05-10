@@ -93,14 +93,14 @@ void APP_Initialize ( void )
     appData.ADC_PinValue[0] = 0;
     appData.ADC_Numerator[0] = 36.3f;
     appData.ADC_Denominator[0] = 1024.0f;
-    appData.ADC_Offset[0] = 0.0f;
+    appData.ADC_Offset[0] = 1.0f;
     appData.ADC_Value[0] = 0.0f;
     strcpy(&appData.ADC_Unit[0][0], "V");
 #ifdef APP_ADC2_INPUT_POS
     appData.ADC_PinValue[1] = 0;
     appData.ADC_Numerator[1] = 36.3f;
     appData.ADC_Denominator[1] = 1024.0f;
-    appData.ADC_Offset[1] = 0.0f;
+    appData.ADC_Offset[1] = 1.0f;
     appData.ADC_Value[1] = 0.0f;
     strcpy(&appData.ADC_Unit[1][0], "V");
 #endif // ifdef APP_ADC2_INPUT_POS
@@ -108,7 +108,7 @@ void APP_Initialize ( void )
     appData.ADC_PinValue[2] = 0;
     appData.ADC_Numerator[2] = 36.3f;
     appData.ADC_Denominator[2] = 1024.0f;
-    appData.ADC_Offset[2] = 0.0f;
+    appData.ADC_Offset[2] = 1.0f;
     appData.ADC_Value[2] = 0.0f;
     strcpy(&appData.ADC_Unit[2][0], "V");
 #endif // ifdef APP_ADC3_INPUT_POS
@@ -116,7 +116,7 @@ void APP_Initialize ( void )
     appData.ADC_PinValue[3] = 0;
     appData.ADC_Numerator[3] = 36.3f;
     appData.ADC_Denominator[3] = 1024.0f;
-    appData.ADC_Offset[3] = 0.0f;
+    appData.ADC_Offset[3] = 1.0f;
     appData.ADC_Value[3] = 0.0f;
     strcpy(&appData.ADC_Unit[3][0], "V");
 #endif // ifdef APP_ADC4_INPUT_POS

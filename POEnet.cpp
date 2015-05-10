@@ -185,7 +185,7 @@ void POEnet_SetTime() {
 
 void POEnet_SetAnalog(tinyxml2::XMLElement *eleAnalog) {
     int myId = eleAnalog->IntAttribute( &POEnet_id[0]);
-    if (!myId) { myId = 1; } // if not (or invalid) specified take 1st 
+    if (myId == 0) { myId = 1; } // if not (or invalid) specified take 1st 
     float newValue;
     tinyxml2::XMLElement *myAnalog;
     tinyxml2::XMLElement *anElement;
@@ -233,7 +233,7 @@ void POEnet_SetAnalog(tinyxml2::XMLElement *eleAnalog) {
 
 void POEnet_GetAnalog(tinyxml2::XMLElement *eleAnalog) {
     int myId = eleAnalog->IntAttribute( &POEnet_id[0]);
-    if (!myId) { myId = 1; } // if not (or invalid) specified take 1st 
+    if (myId == 0) { myId = 1; } // if not (or invalid) specified take 1st 
     tinyxml2::XMLElement *myAnalog;
 	tinyxml2::XMLElement *anElement;
     myAnalog = POEnetNode.RootElement()->FirstChildElement(&POEnet_analog[0]);
@@ -265,7 +265,7 @@ void POEnet_GetAnalog(tinyxml2::XMLElement *eleAnalog) {
 void POEnet_SetDigital(tinyxml2::XMLElement *eleDigital) {
     // POETODO: checking for lovalue, hivalue settings; translation with loValue & hiValue 
     int myId = eleDigital->IntAttribute( &POEnet_id[0]);
-    if (!myId) { myId = 1; } // if not (or invalid) specified take 1st 
+    if (myId == 0) { myId = 1; } // if not (or invalid) specified take 1st 
     tinyxml2::XMLElement *myDigital;
     tinyxml2::XMLElement *anElement;
     myDigital = POEnetNode.RootElement()->FirstChildElement(&POEnet_analog[0]);
@@ -296,7 +296,7 @@ void POEnet_SetDigital(tinyxml2::XMLElement *eleDigital) {
 void POEnet_GetDigital(tinyxml2::XMLElement *eleDigital) {
     // POETODO: translation with loValue & hiValue 
     int myId = eleDigital->IntAttribute( &POEnet_id[0]);
-    if (!myId) { myId = 1; } // if not (or invalid) specified take 1st 
+    if (myId == 0) { myId = 1; } // if not (or invalid) specified take 1st 
     tinyxml2::XMLElement *myDigital;
 	tinyxml2::XMLElement *anElement;
     myDigital = POEnetNode.RootElement()->FirstChildElement(&POEnet_digital[0]);
@@ -326,7 +326,7 @@ void POEnet_SetSwitch(tinyxml2::XMLElement *eleSwitch) {
     // POETODO: translation with loValue & hiValue 
     int myId = eleSwitch->IntAttribute( &POEnet_id[0]);
     int newValue;
-    if (!myId) { myId = 1; } // if not (or invalid) specified take 1st 
+    if (myId == 0) { myId = 1; } // if not (or invalid) specified take 1st 
     tinyxml2::XMLElement *mySwitch;
     tinyxml2::XMLElement *anElement;
     mySwitch = POEnetNode.RootElement()->FirstChildElement(&POEnet_switch[0]);
@@ -362,7 +362,7 @@ void POEnet_SetSwitch(tinyxml2::XMLElement *eleSwitch) {
 void POEnet_GetSwitch(tinyxml2::XMLElement *eleSwitch) {
     // POETODO: translation with loValue & hiValue 
     int myId = eleSwitch->IntAttribute( &POEnet_id[0]);
-    if (!myId) { myId = 1; } // if not (or invalid) specified take 1st 
+    if (myId == 0) { myId = 1; } // if not (or invalid) specified take 1st 
     tinyxml2::XMLElement *mySwitch;
 	tinyxml2::XMLElement *anElement;
     mySwitch = POEnetNode.RootElement()->FirstChildElement(&POEnet_switch[0]);
