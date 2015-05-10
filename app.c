@@ -156,6 +156,11 @@ void APP_LCD_WriteSize(int line, int pos, int size) {
     if (i) { APP_LCD_PrintChar(line, pos, 'A');}
 }
 
+void APP_LCD_SetNodeId(void) {
+    APP_LCD_Print(1, 15, &appData.POEnetUID[0]);
+    APP_LCD_PrintChar(1, 19, numChar[appData.POEnet_NodeId]);
+}
+
 // APP Time Base
 void APP_TimingCallback ( void ) {
     // Adjust App Timing
@@ -465,6 +470,7 @@ void APP_Tasks ( void )
                     //POE.net Message -> pass to interpreter
                     POEnet_Interpret(&appData.POEnetPrimInputBuf[1]);
                     APP_LCD_Print( 1, 7, &POEnet_empty[0]);
+                    APP_LCD_SetNodeId();
                     appData.LCD_Return_AppState = APP_STATE_POENET_COMMAND;
                     appData.state = APP_LCD_UPDATE;
                     break;
@@ -505,6 +511,7 @@ void APP_Tasks ( void )
             //    // handle net command
             //    POEnet_GetNewNodeId(&appData.POEnet_NodeId);
             //}
+            ClearBuffer(&appData.POEnetPrimOutputBuf[0]);
             appData.POEnetPrimOutputBuf[0] = 'U';
             POEnet_Output(&appData.POEnetPrimOutputBuf[1]);
             appData.POEnetPrimOutputSize = strlen(&appData.POEnetPrimOutputBuf[0]);

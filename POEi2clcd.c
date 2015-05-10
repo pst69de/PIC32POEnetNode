@@ -292,38 +292,66 @@ bool LCD_Init(int mSecs) {
                 break;
             case LCD_wait_on:
                 // data & address always LIFO
+#ifndef LCD_QC2004A
                 LCD_AddWrite( LCD_COMMAND | LCD_RW_WRITE | LCD_E_WRITE | LCD_8BIT_H);
                 LCD_AddWrite( LCD_COMMAND | LCD_RW_WRITE | LCD_E_PREPARE | LCD_8BIT_H);
+#else
+                LCD_AddWrite( LCD_COMMAND | LCD_RW_WRITE | LCD_E_WRITE | LCD_8BIT_H);
+                LCD_AddWrite( LCD_COMMAND | LCD_RW_WRITE | LCD_E_PREPARE | LCD_8BIT_H);
+#endif
                 LCD_AddAddress( LCD_ADDRESS | I2C_WRITE);
                 LCD_StartWrite();
                 LCD_InitState = LCD_init_8bit;
                 break;
             case LCD_init_8bit:
                 if (LCD_I2C_Ready()) {
+#ifndef LCD_QC2004A
                     Waits = 4; // Wait at least 4 ms after 8bit switch
                     LCD_InitState = LCD_wait_8bit;
+#else
+                    Waits = 15; // Wait at least 4 ms after 8bit switch
+                    LCD_InitState = LCD_wait_8bit;
+#endif
                 }
                 break;
             case LCD_wait_8bit:
                 // data & address always LIFO
+#ifndef LCD_QC2004A
                 LCD_AddWrite( LCD_COMMAND | LCD_RW_WRITE | LCD_E_WRITE | LCD_8BIT_H);
                 LCD_AddWrite( LCD_COMMAND | LCD_RW_WRITE | LCD_E_PREPARE | LCD_8BIT_H);
+#else
+                LCD_AddWrite( LCD_COMMAND | LCD_RW_WRITE | LCD_E_WRITE | LCD_8BIT_H);
+                LCD_AddWrite( LCD_COMMAND | LCD_RW_WRITE | LCD_E_PREPARE | LCD_8BIT_H);
+#endif
                 LCD_AddAddress( LCD_ADDRESS | I2C_WRITE);
                 LCD_StartWrite();
                 LCD_InitState = LCD_switch_8bit;
                 break;
             case LCD_switch_8bit:
                 if (LCD_I2C_Ready()) {
+#ifndef LCD_QC2004A
                     Waits = 1; // Wait at least 1 ms after 8bit switch
+#else
+                    Waits = 15; // Wait at least 1 ms after 8bit switch
+#endif
                     LCD_InitState = LCD_8bit_wait;
                 }
                 break;
             case LCD_8bit_wait:
                 // data & address always LIFO
+#ifndef LCD_QC2004A
                 LCD_AddWrite( LCD_COMMAND | LCD_RW_WRITE | LCD_E_WRITE | LCD_4BIT_H);
                 LCD_AddWrite( LCD_COMMAND | LCD_RW_WRITE | LCD_E_PREPARE | LCD_4BIT_H);
                 LCD_AddWrite( LCD_COMMAND | LCD_RW_WRITE | LCD_E_WRITE | LCD_8BIT_H);
                 LCD_AddWrite( LCD_COMMAND | LCD_RW_WRITE | LCD_E_PREPARE | LCD_8BIT_H);
+#else
+                LCD_AddWrite( LCD_COMMAND | LCD_RW_WRITE | LCD_E_WRITE | LCD_4BIT_H);
+                LCD_AddWrite( LCD_COMMAND | LCD_RW_WRITE | LCD_E_PREPARE | LCD_4BIT_H);
+                LCD_AddWrite( LCD_COMMAND | LCD_RW_WRITE | LCD_E_WRITE | LCD_8BIT_H);
+                LCD_AddWrite( LCD_COMMAND | LCD_RW_WRITE | LCD_E_PREPARE | LCD_8BIT_H);
+                LCD_AddWrite( LCD_COMMAND | LCD_RW_WRITE | LCD_E_WRITE | LCD_8BIT_H);
+                LCD_AddWrite( LCD_COMMAND | LCD_RW_WRITE | LCD_E_PREPARE | LCD_8BIT_H);
+#endif
                 LCD_AddAddress( LCD_ADDRESS | I2C_WRITE);
                 LCD_StartWrite();
                 LCD_InitState = LCD_switch_4bit;

@@ -119,6 +119,9 @@ extern "C" {
 // set backlight bit if necessary
 #define LCD_BACKLIGHT              0x08
 
+#define LCD_QC2004A
+
+
 // extern reference point
 extern bool LCD_Backlight;
 

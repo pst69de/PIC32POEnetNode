@@ -107,9 +107,10 @@ void POEnet_GetNewNodeId() {
         // no node yet, we start with 1
         *node_id = 1;
     } else {
+        // assuming the node are in order of id 
         while (aNode->NextSiblingElement(&POEnet_node[0])) { aNode = aNode->NextSiblingElement(&POEnet_node[0]);}
         aNode->QueryIntAttribute(&POEnet_id[0],node_id);
-        *node_id++;
+        (*node_id)++;
     }
     myNode = POEnetCommand.NewElement(&POEnet_node[0]);
     myNode->SetAttribute(&POEnet_id[0],*node_id);
@@ -385,6 +386,7 @@ void POEnet_GetSwitch(tinyxml2::XMLElement *eleSwitch) {
 }
 
 void POEnet_Interpret(const char *buffer) {
+    POEnetCommand.Clear();
     POEnetCommand.Parse(buffer);
     if (!POEnetCommand.Error()) {
         if (!strcmp(POEnetCommand.RootElement()->Name(), &POEnet_reset[0])) {
