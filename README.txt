@@ -117,7 +117,7 @@ Source directory of a typical MPLABX project using MPLAB Harmony libraries.
 ** Open MPLABX
 *** Create empty project
 *** "Choose Project" "Microchip Embedded > Standalone Project"
-*** "Select Device" Family "32-bit MCUs (PIC32)" your Device (mine is a "PIC32MX250F128B")
+*** "Select Device" Family "32-bit MCUs (PIC32)" your Device (mine is a "PIC32MX150F128B")
 *** "Select Tool", mine is a "Microstick II" which is coded "Starter Kits (PKOB)" within the "Microchip Starter Kits" Group
 *** "Select Compiler", as mentioned "XC32 (v1.34) ..."
 *** "Select Project Name and Folder" 
