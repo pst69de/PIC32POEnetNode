@@ -91,6 +91,7 @@ void APP_Initialize ( void )
 #ifdef APP_USE_ADC
     appData.ADC_PinIdx = 1;
     appData.ADC_PinValue[0] = 0;
+    for (i = 0; i < APP_ADC_MEAN_BUFFER; i++) { appData.ADC_PinMean[0][i] = 0;}
     appData.ADC_Numerator[0] = 36.3f;
     appData.ADC_Denominator[0] = 1024.0f;
     appData.ADC_Offset[0] = 1.0f;
@@ -98,6 +99,7 @@ void APP_Initialize ( void )
     strcpy(&appData.ADC_Unit[0][0], "V");
 #ifdef APP_ADC2_INPUT_POS
     appData.ADC_PinValue[1] = 0;
+    for (i = 0; i < APP_ADC_MEAN_BUFFER; i++) { appData.ADC_PinMean[1][i] = 0;}
     appData.ADC_Numerator[1] = 36.3f;
     appData.ADC_Denominator[1] = 1024.0f;
     appData.ADC_Offset[1] = 1.0f;
@@ -106,6 +108,7 @@ void APP_Initialize ( void )
 #endif // ifdef APP_ADC2_INPUT_POS
 #ifdef APP_ADC3_INPUT_POS
     appData.ADC_PinValue[2] = 0;
+    for (i = 0; i < APP_ADC_MEAN_BUFFER; i++) { appData.ADC_PinMean[2][i] = 0;}
     appData.ADC_Numerator[2] = 36.3f;
     appData.ADC_Denominator[2] = 1024.0f;
     appData.ADC_Offset[2] = 1.0f;
@@ -114,6 +117,7 @@ void APP_Initialize ( void )
 #endif // ifdef APP_ADC3_INPUT_POS
 #ifdef APP_ADC4_INPUT_POS
     appData.ADC_PinValue[3] = 0;
+    for (i = 0; i < APP_ADC_MEAN_BUFFER; i++) { appData.ADC_PinMean[3][i] = 0;}
     appData.ADC_Numerator[3] = 36.3f;
     appData.ADC_Denominator[3] = 1024.0f;
     appData.ADC_Offset[3] = 1.0f;
@@ -310,7 +314,7 @@ char str2int[12] = "\0";
 
 void APP_Tasks ( void )
 {
-    int i;
+    int i,m;
     // check the application state
     switch ( appData.state ) {
         // Application's initial state
@@ -674,6 +678,13 @@ void APP_Tasks ( void )
         // wait on ADC conversion
         case APP_STATE_READ_ADC:
             if (ADC_ResultIfReady(&appData.ADC_PinValue[appData.ADC_PinIdx - 1])) {
+                m = appData.ADC_PinValue[appData.ADC_PinIdx - 1];
+                for (i = 1; i < APP_ADC_MEAN_BUFFER; i++) { 
+                    m += appData.ADC_PinMean[appData.ADC_PinIdx - 1][i];
+                    appData.ADC_PinMean[appData.ADC_PinIdx - 1][i - 1] = appData.ADC_PinMean[appData.ADC_PinIdx - 1][i];
+                }
+                appData.ADC_PinMean[appData.ADC_PinIdx - 1][APP_ADC_MEAN_BUFFER - 1] = appData.ADC_PinValue[appData.ADC_PinIdx - 1];
+                appData.ADC_PinValue[appData.ADC_PinIdx - 1] = m / APP_ADC_MEAN_BUFFER;
                 appData.ADC_Value[appData.ADC_PinIdx - 1] = appData.ADC_PinValue[appData.ADC_PinIdx - 1] 
                                                           * appData.ADC_Numerator[appData.ADC_PinIdx - 1] 
                                                           / appData.ADC_Denominator[appData.ADC_PinIdx - 1]

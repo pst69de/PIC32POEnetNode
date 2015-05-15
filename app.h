@@ -131,6 +131,7 @@ typedef struct
 #ifdef APP_USE_ADC
     APP_STATES        ADC_Return_AppState;
     int               ADC_PinValue[APP_ADC_NUM_PINS];
+    int               ADC_PinMean[APP_ADC_NUM_PINS][APP_ADC_MEAN_BUFFER];
     float             ADC_Numerator[APP_ADC_NUM_PINS];
     float             ADC_Denominator[APP_ADC_NUM_PINS];
     float             ADC_Offset[APP_ADC_NUM_PINS];

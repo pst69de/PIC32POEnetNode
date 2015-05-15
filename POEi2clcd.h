@@ -160,7 +160,7 @@ void LCD_ClearLine( uint8_t line);
 // Update a char in the LCD line buffer
 void LCD_PrintChar(uint8_t line, uint8_t pos, char lcdChar);
 // put a string
-void LCD_Print(uint8_t line, uint8_t pos, char* lcdString);
+void LCD_Print(uint8_t line, uint8_t pos, const char* lcdString);
 
 // typedefs
 // I2C mode definitions (not completely used yet

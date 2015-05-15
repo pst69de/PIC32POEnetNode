@@ -264,7 +264,7 @@ void LCD_PrintChar(uint8_t line, uint8_t pos, char lcdChar) {
     LCD_Line[line][pos] = lcdChar;
 }
 
-void LCD_Print(uint8_t line, uint8_t pos, char* lcdString) {
+void LCD_Print(uint8_t line, uint8_t pos, const char* lcdString) {
     uint8_t i, len;
     len = strlen(lcdString);
     if (len + pos > LCD_LINEBUFFER_SIZE) { len = LCD_LINEBUFFER_SIZE - pos; }

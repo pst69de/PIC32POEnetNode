@@ -207,6 +207,7 @@ extern "C" {
 #endif // of ifdef APP_USE_UART
 
 #ifdef APP_USE_ADC
+#define APP_ADC_MEAN_BUFFER    10
 #define APP_ADC_NUM_PINS       4
 #define APP_ADC_ID             ADC_ID_1
 #define APP_ADC_CCLK_BASE      APP_PBCLK_FREQ
