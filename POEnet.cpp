@@ -39,6 +39,7 @@ const char POEnet_lovalue[] = "lovalue";
 const char POEnet_hivalue[] = "hivalue";
 const char POEnet_switch[] = "switch";
 const char POEnet_pwm[] = "pwm";
+const char POEnet_frequency[] = "frequency";
 const char POEnet_text[] = "text";
 const char POEnet_action[] = "action";
 int  *node_id;
@@ -268,7 +269,7 @@ void POEnet_SetDigital(tinyxml2::XMLElement *eleDigital) {
     if (myId == 0) { myId = 1; } // if not (or invalid) specified take 1st 
     tinyxml2::XMLElement *myDigital;
     tinyxml2::XMLElement *anElement;
-    myDigital = POEnetNode.RootElement()->FirstChildElement(&POEnet_analog[0]);
+    myDigital = POEnetNode.RootElement()->FirstChildElement(&POEnet_digital[0]);
     while (myDigital) {
         if (myDigital->IntAttribute( &POEnet_id[0]) == myId) {
             // found my Digital input -> check for lovalue, hivalue subelements
@@ -288,7 +289,7 @@ void POEnet_SetDigital(tinyxml2::XMLElement *eleDigital) {
             }
             myDigital = 0;
         } else {
-            myDigital = myDigital->NextSiblingElement(&POEnet_analog[0]);
+            myDigital = myDigital->NextSiblingElement(&POEnet_digital[0]);
         }
     }
 }

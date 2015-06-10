@@ -37,6 +37,7 @@ extern const char POEnet_lovalue[];
 extern const char POEnet_hivalue[];
 extern const char POEnet_switch[];
 extern const char POEnet_pwm[];
+extern const char POEnet_frequency[];
 extern const char POEnet_text[];
 extern const char POEnet_action[];
 
