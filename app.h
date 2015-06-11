@@ -57,6 +57,8 @@ typedef enum {
 #ifdef APP_USE_ADC
     // Start a ADC read
     APP_STATE_START_ADC,
+    // ADC wait on Sample
+    APP_STATE_SAMPLE_ADC,
     // Convert initiated ADC read
     APP_STATE_CONVERT_ADC,
     // wait on ADC conversion
@@ -129,6 +131,7 @@ typedef struct
 // ADC_PinIdx is used as polling state for data polling
     int               ADC_PinIdx;
 #ifdef APP_USE_ADC
+    int               ADC_Waits_Sample;
     APP_STATES        ADC_Return_AppState;
     int               ADC_PinValue[APP_ADC_NUM_PINS];
     int               ADC_PinMean[APP_ADC_NUM_PINS][APP_ADC_MEAN_BUFFER];

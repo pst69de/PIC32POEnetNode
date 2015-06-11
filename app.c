@@ -665,7 +665,14 @@ void APP_Tasks ( void )
         // Start a ADC read
         case APP_STATE_START_ADC:
             ADC_StartSample(appData.ADC_PinIdx);
-            appData.state = APP_STATE_CONVERT_ADC;
+            appData.ADC_Waits_Sample = APP_ADC_SAMPLE_CYCLE;
+            appData.state = APP_STATE_SAMPLE_ADC;
+            break;
+        case APP_STATE_SAMPLE_ADC:
+            if (--appData.ADC_Waits_Sample <= 0) {
+                appData.ADC_Waits_Sample = 0;
+                appData.state = APP_STATE_CONVERT_ADC;
+            }
             break;
         // Convert initiated ADC read
         case APP_STATE_CONVERT_ADC:
