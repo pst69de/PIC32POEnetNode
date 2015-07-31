@@ -92,37 +92,37 @@ void APP_Initialize ( void )
     appData.ADC_PinIdx = 1;
     appData.ADC_PinValue[0] = 0;
     for (i = 0; i < APP_ADC_MEAN_BUFFER; i++) { appData.ADC_PinMean[0][i] = 0;}
-    appData.ADC_Numerator[0] = 33.94f;
+    appData.ADC_Numerator[0] = 102.4f;
     appData.ADC_Denominator[0] = 1024.0f;
-    appData.ADC_Offset[0] = 2.0f;
+    appData.ADC_Offset[0] = 0.0f;
     appData.ADC_Value[0] = 0.0f;
-    strcpy(&appData.ADC_Unit[0][0], "V");
+    strcpy(&appData.ADC_Unit[0][0], "Du");
 #ifdef APP_ADC2_INPUT_POS
     appData.ADC_PinValue[1] = 0;
     for (i = 0; i < APP_ADC_MEAN_BUFFER; i++) { appData.ADC_PinMean[1][i] = 0;}
-    appData.ADC_Numerator[1] = 33.94f;
+    appData.ADC_Numerator[1] = 102.4f;
     appData.ADC_Denominator[1] = 1024.0f;
-    appData.ADC_Offset[1] = 2.0f;
+    appData.ADC_Offset[1] = 0.0f;
     appData.ADC_Value[1] = 0.0f;
-    strcpy(&appData.ADC_Unit[1][0], "V");
+    strcpy(&appData.ADC_Unit[1][0], "Du");
 #endif // ifdef APP_ADC2_INPUT_POS
 #ifdef APP_ADC3_INPUT_POS
     appData.ADC_PinValue[2] = 0;
     for (i = 0; i < APP_ADC_MEAN_BUFFER; i++) { appData.ADC_PinMean[2][i] = 0;}
     appData.ADC_Numerator[2] = 33.94f;
     appData.ADC_Denominator[2] = 1024.0f;
-    appData.ADC_Offset[2] = 2.0f;
+    appData.ADC_Offset[2] = 0.0f;
     appData.ADC_Value[2] = 0.0f;
     strcpy(&appData.ADC_Unit[2][0], "V");
 #endif // ifdef APP_ADC3_INPUT_POS
 #ifdef APP_ADC4_INPUT_POS
     appData.ADC_PinValue[3] = 0;
     for (i = 0; i < APP_ADC_MEAN_BUFFER; i++) { appData.ADC_PinMean[3][i] = 0;}
-    appData.ADC_Numerator[3] = 33.94f;
+    appData.ADC_Numerator[3] = -50.0f;
     appData.ADC_Denominator[3] = 1024.0f;
-    appData.ADC_Offset[3] = 2.0f;
+    appData.ADC_Offset[3] = 65.0f;
     appData.ADC_Value[3] = 0.0f;
-    strcpy(&appData.ADC_Unit[3][0], "V");
+    strcpy(&appData.ADC_Unit[3][0], "A");
 #endif // ifdef APP_ADC4_INPUT_POS
 #endif // ifdef APP_USE_ADC
 #ifdef APP_USE_DIO

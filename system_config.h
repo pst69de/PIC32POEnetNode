@@ -212,7 +212,7 @@ extern "C" {
 #define APP_ADC_ID             ADC_ID_1
 #define APP_ADC_CCLK_BASE      APP_PBCLK_FREQ
 #define APP_ADC_CCLK_RATE      4000000L
-#define APP_ADC_SAMPLE_CYCLE   1
+#define APP_ADC_SAMPLE_CYCLE   7
 // 1st analog input pin (should allways be defined)
 #define APP_ADC1_INPUT_POS     ADC_INPUT_POSITIVE_AN9
 #define APP_ADC1_PORTS_ID      PORTS_ID_0
