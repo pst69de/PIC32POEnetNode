@@ -149,7 +149,21 @@ typedef struct
     int               DO_Value[APP_DO_COUNT];
     char              DO_LoValue[APP_DO_COUNT][APP_STRING_SIZE];
     char              DO_HiValue[APP_DO_COUNT][APP_STRING_SIZE];
-#endif
+#endif // ifdef APP_USE_DIO
+#ifdef APP_USE_PWM
+    float             PWM_Frequency;
+    float             PWM_Phase1;
+    float             PWM_Width1;
+    float             PWM_Phase2;
+    float             PWM_Width2;
+    TMR_PRESCALE      PWM_PreScale;
+    int               PWM_PSFactor;
+    int               PWM_Width;
+    int               PWM_Start1;
+    int               PWM_Stop1;
+    int               PWM_Start2;
+    int               PWM_Stop2;
+#endif // ifdef APP_USE_PWM
 } APP_DATA;
 
 // -> USB Handling migrated to POEusb

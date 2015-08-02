@@ -140,7 +140,21 @@ void APP_Initialize ( void )
         ClearString(&appData.DO_HiValue[i][0]);
         appData.DO_HiValue[i][0] = '1';
     }
-#endif
+#endif // ifdef APP_USE_DIO
+#ifdef APP_USE_PWM
+    appData.PWM_Frequency = 50.0f;
+    appData.PWM_Phase1    = 0.0f;
+    appData.PWM_Width1    = 10.0f;
+    appData.PWM_Phase2    = 50.0f;
+    appData.PWM_Width2    = 10.0f;
+    appData.PWM_PreScale  = APP_PWM_TMR_PRESCALE;
+    appData.PWM_PSFactor  = APP_PWM_TMR_PSFactor;
+    appData.PWM_Width     = APP_PWM_TMR_INIT;
+    appData.PWM_Start1    = APP_PWM_OC1_On;
+    appData.PWM_Stop1     = APP_PWM_OC1_Off;
+    appData.PWM_Start2    = APP_PWM_OC2_On;
+    appData.PWM_Stop2     = APP_PWM_OC2_Off;
+#endif // ifdef APP_USE_PWM
     // Place the App state machine in its initial state.
     appData.state = APP_STATE_INIT;
 }
@@ -315,6 +329,10 @@ char str2int[12] = "\0";
 void APP_Tasks ( void )
 {
     int i,m;
+#ifdef APP_USE_PWM
+    bool newPWM;
+#endif // ifdef APP_USE_PWM
+    
     // check the application state
     switch ( appData.state ) {
         // Application's initial state
@@ -368,6 +386,7 @@ void APP_Tasks ( void )
 #endif
 #endif // ifdef APP_USE_DIO
 #ifdef APP_USE_PWM
+            POEnet_AddPWM(1, &appData.PWM_Frequency, &appData.PWM_Phase1, &appData.PWM_Width1, &appData.PWM_Phase2, &appData.PWM_Width2);
 #endif // ifdef APP_USE_PWM
 #ifdef APP_USE_UART
             // init UART before USB
@@ -645,6 +664,117 @@ void APP_Tasks ( void )
                 }
 #endif // ifdef APP_DO_4
 #endif // ifdef APP_USE_DIO
+#ifdef APP_USE_PWM
+                // POETODO: set PWM if needed
+                newPWM = false;
+                // Calculation of PreScale frequency * maxwidth must be greater than prescaled timer clock
+                if (65535 > (APP_PBCLK_FREQ / appData.PWM_Frequency)) {
+                    // TMR_PRESCALE_VALUE_1 = 0x00,
+                    if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_1) { 
+                        newPWM = true;
+                        appData.PWM_PreScale = TMR_PRESCALE_VALUE_1;
+                        appData.PWM_PSFactor = 1;
+                    }
+                }
+                else if (65535 > (APP_PBCLK_FREQ / (2 * appData.PWM_Frequency))) {
+                    // TMR_PRESCALE_VALUE_2 = 0x01,
+                    if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_2) { 
+                        newPWM = true;
+                        appData.PWM_PreScale = TMR_PRESCALE_VALUE_2;
+                        appData.PWM_PSFactor = 2;
+                    }
+                }
+                else if (65535 > (APP_PBCLK_FREQ / (4 * appData.PWM_Frequency))) {
+                    // TMR_PRESCALE_VALUE_4 = 0x02,
+                    if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_4) { 
+                        newPWM = true;
+                        appData.PWM_PreScale = TMR_PRESCALE_VALUE_4;
+                        appData.PWM_PSFactor = 4;
+                    }
+                }
+                else if (65535 > (APP_PBCLK_FREQ / (8 * appData.PWM_Frequency))) {
+                    // TMR_PRESCALE_VALUE_8 = 0x03,
+                    if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_8) { 
+                        newPWM = true;
+                        appData.PWM_PreScale = TMR_PRESCALE_VALUE_8;
+                        appData.PWM_PSFactor = 8;
+                    }
+                }
+                else if (65535 > (APP_PBCLK_FREQ / (16 * appData.PWM_Frequency))) {
+                    // TMR_PRESCALE_VALUE_16 = 0x04,
+                    if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_16) { 
+                        newPWM = true;
+                        appData.PWM_PreScale = TMR_PRESCALE_VALUE_16;
+                        appData.PWM_PSFactor = 16;
+                    }
+                }
+                else if (65535 > (APP_PBCLK_FREQ / (32 * appData.PWM_Frequency))) {
+                    // TMR_PRESCALE_VALUE_32 = 0x05,
+                    if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_32) { 
+                        newPWM = true;
+                        appData.PWM_PreScale = TMR_PRESCALE_VALUE_32;
+                        appData.PWM_PSFactor = 32;
+                    }
+                }
+                else if (65535 > (APP_PBCLK_FREQ / (64 * appData.PWM_Frequency))) {
+                    // TMR_PRESCALE_VALUE_64 = 0x06,
+                    if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_64) { 
+                        newPWM = true;
+                        appData.PWM_PreScale = TMR_PRESCALE_VALUE_64;
+                        appData.PWM_PSFactor = 64;
+                    }
+                }
+                else {
+                    // TMR_PRESCALE_VALUE_256 = 0x07 (lowest)
+                    // at least 2Hz
+                    if (appData.PWM_Frequency < 2.0f) {appData.PWM_Frequency = 2.0f;}
+                    if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_256) { 
+                        newPWM = true;
+                        appData.PWM_PreScale = TMR_PRESCALE_VALUE_256;
+                        appData.PWM_PSFactor = 256;
+                    }
+                }
+                // Calculation of Timer Width
+                m = (int)(APP_PBCLK_FREQ / (appData.PWM_PSFactor * appData.PWM_Frequency));
+                if (appData.PWM_Width != m) {
+                    newPWM = true;
+                    appData.PWM_Width = m;
+                }
+                // POETODO: if any of PWM_Phase1, PWM_Phase1+PWM_Width1, PWM_Phase2, PWM_Phase2+PWM_Width2 > 100% then the MCU gets an invalid value
+                // solution may be based on shifting all values around the corner, not yet implemented
+                // Calculation of Start1
+                m = (int)((appData.PWM_Width * appData.PWM_Phase1 / 100.0f) + 1);
+                if (appData.PWM_Start1 != m) {
+                    newPWM = true;
+                    appData.PWM_Start1 = m;
+                }
+                // Calculation of Stop1
+                m = (int)((appData.PWM_Width * (appData.PWM_Phase1 + appData.PWM_Width1) / 100.0f) + 1);
+                if (appData.PWM_Stop1 != m) {
+                    newPWM = true;
+                    appData.PWM_Stop1 = m;
+                }
+                // Calculation of Start2
+                m = (int)((appData.PWM_Width * appData.PWM_Phase2 / 100.0f) + 1);
+                if (appData.PWM_Start2 != m) {
+                    newPWM = true;
+                    appData.PWM_Start2 = m;
+                }
+                // Calculation of Stop2
+                m = (int)((appData.PWM_Width * (appData.PWM_Phase2 + appData.PWM_Width2) / 100.0f) + 1);
+                if (appData.PWM_Stop2 != m) {
+                    newPWM = true;
+                    appData.PWM_Stop2 = m;
+                }
+                // Set new timing if needed
+                if (newPWM) {
+#ifdef APP_PWM_OC2_ID
+                    PWM_SetValues( appData.PWM_PreScale, appData.PWM_Width, appData.PWM_Start1, appData.PWM_Stop1, appData.PWM_Start2, appData.PWM_Stop2);
+#else // ifdef APP_PWM_OC2_ID
+                    PWM_SetValues( appData.PWM_PreScale, appData.PWM_Width, appData.PWM_Start1, appData.PWM_Stop1);
+#endif // else APP_PWM_OC2_ID
+                }
+#endif // ifdef APP_USE_PWM
                 // maybe indirect redirect to return, when no ADC is used
                 appData.ADC_PinIdx = 1;
 #ifdef APP_USE_ADC

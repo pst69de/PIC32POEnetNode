@@ -38,6 +38,10 @@ extern const char POEnet_hivalue[];
 extern const char POEnet_switch[];
 extern const char POEnet_pwm[];
 extern const char POEnet_frequency[];
+extern const char POEnet_phase1[];
+extern const char POEnet_width1[];
+extern const char POEnet_phase2[];
+extern const char POEnet_width2[];
 extern const char POEnet_text[];
 extern const char POEnet_action[];
 
@@ -47,6 +51,7 @@ void POEnet_Node_Init(int *id, char *name, int *hours, int *minutes, int *second
 void POEnet_AddAnalog(int id, float *Value, float *numerator, float *denominator, float *offset, char *unit);
 void POEnet_AddDigital(int id, int *Value, char *loVal, char *hiVal);
 void POEnet_AddSwitch(int id, int *Value, char *loVal, char *hiVal);
+void POEnet_AddPWM(int id, float *Value, float *Phase1, float *Width1, float *Phase2, float *Width2);
 
 void POEnet_NodeDump(char *buffer);
 

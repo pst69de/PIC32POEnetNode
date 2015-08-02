@@ -16,6 +16,7 @@ extern "C" {
 #define APP_USE_UART
 #define APP_USE_ADC
 #define APP_USE_DIO
+#define APP_USE_PWM
 
 // imports:
 #include "peripheral/ports/plib_ports.h"
@@ -25,7 +26,9 @@ extern "C" {
 #ifdef APP_USE_UART
 #include "peripheral/usart/plib_usart.h"
 #endif
-
+#ifdef APP_USE_PWM
+#include "peripheral/oc/plib_oc.h"
+#endif
 // APP definitions 
 #define APP_BUFFER_SIZE             1024
 #define APP_STRING_SIZE             20
@@ -262,6 +265,38 @@ extern "C" {
 #define APP_DO_4_OD
 #define APP_DO_COUNT     2
 #endif // ifdef APP_USE_DIO
+
+#ifdef APP_USE_PWM
+// programming with single timer 1st
+#define APP_PWM_TMR_ID            TMR_ID_2
+#define APP_PWM_TMR_PRESCALE      TMR_PRESCALE_VALUE_8
+#define APP_PWM_TMR_PSFactor      8
+#define APP_PWM_TMR_INIT          0xEA60 // 50Hz
+// OC1 via PPS @ RPB4
+#define APP_PWM_OC1_ID            OC_ID_1
+#define APP_PWM_OC1_PORTS_ID      PORTS_ID_0
+#define APP_PWM_OC1_PORT_CHANNEL  PORT_CHANNEL_B
+#define APP_PWM_OC1_PIN           PORTS_BIT_POS_4
+// not an analog pin
+#define APP_PWM_OC1_Mode
+#define APP_PWM_OC1_Function      OUTPUT_FUNC_OC1
+#define APP_PWM_OC1_PPSOut        OUTPUT_PIN_RPB4
+// initial on / off values 10% (0 Phase)
+#define APP_PWM_OC1_On            0x0001
+#define APP_PWM_OC1_Off           0x1771
+// OC4 via PPS @ RPA4
+#define APP_PWM_OC2_ID            OC_ID_4
+#define APP_PWM_OC2_PORTS_ID      PORTS_ID_0
+#define APP_PWM_OC2_PORT_CHANNEL  PORT_CHANNEL_A
+#define APP_PWM_OC2_PIN           PORTS_BIT_POS_4
+// not an analog pin
+#define APP_PWM_OC2_Mode
+#define APP_PWM_OC2_Function      OUTPUT_FUNC_OC4
+#define APP_PWM_OC2_PPSOut        OUTPUT_PIN_RPA4
+// initial on / off values 10% (Pi/2 Phase)
+#define APP_PWM_OC2_On            0x7531
+#define APP_PWM_OC2_Off           0x8CA0
+#endif // ifdef APP_USE_PWM
 
 #ifdef	__cplusplus
 }

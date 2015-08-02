@@ -40,6 +40,10 @@ const char POEnet_hivalue[] = "hivalue";
 const char POEnet_switch[] = "switch";
 const char POEnet_pwm[] = "pwm";
 const char POEnet_frequency[] = "frequency";
+const char POEnet_phase1[] = "phase1";
+const char POEnet_width1[] = "width1";
+const char POEnet_phase2[] = "phase2";
+const char POEnet_width2[] = "width2";
 const char POEnet_text[] = "text";
 const char POEnet_action[] = "action";
 int  *node_id;
@@ -64,7 +68,7 @@ void POEnet_Node_Init(int *id, char *name, int *hours, int *minutes, int *second
 
 void POEnet_AddAnalog(int id, float *Value, float *numerator, float *denominator, float *offset, char *unit) {
     tinyxml2::XMLElement *elemAnalog = POEnetNode.NewElement( &POEnet_analog[0]); 
-	// keep the order of id, value and others
+    // keep the order of id, value and others
     elemAnalog->SetAttribute(&POEnet_id[0], id);
     elemAnalog->SetAttribute(&POEnet_value[0], Value);
     elemAnalog->SetAttribute(&POEnet_numerator[0], numerator);
@@ -76,7 +80,7 @@ void POEnet_AddAnalog(int id, float *Value, float *numerator, float *denominator
 
 void POEnet_AddDigital(int id, int *Value, char *loVal, char *hiVal) {
     tinyxml2::XMLElement *elemDigital = POEnetNode.NewElement( &POEnet_digital[0]); 
-	// keep the order of id, value and others
+    // keep the order of id, value and others
     elemDigital->SetAttribute(&POEnet_id[0], id);
     elemDigital->SetAttribute(&POEnet_value[0], Value);
     elemDigital->SetAttribute(&POEnet_lovalue[0], loVal, APP_STRING_SIZE);
@@ -86,11 +90,23 @@ void POEnet_AddDigital(int id, int *Value, char *loVal, char *hiVal) {
 
 void POEnet_AddSwitch(int id, int *Value, char *loVal, char *hiVal) {
     tinyxml2::XMLElement *elemSwitch = POEnetNode.NewElement( &POEnet_switch[0]); 
-	// keep the order of id, value and others
+    // keep the order of id, value and others
     elemSwitch->SetAttribute(&POEnet_id[0], id);
     elemSwitch->SetAttribute(&POEnet_value[0], Value);
     elemSwitch->SetAttribute(&POEnet_lovalue[0], loVal, APP_STRING_SIZE);
     elemSwitch->SetAttribute(&POEnet_hivalue[0], hiVal, APP_STRING_SIZE);
+    POEnetNode.RootElement()->InsertEndChild( elemSwitch);
+}
+
+void POEnet_AddPWM(int id, float *Value, float *Phase1, float *Width1, float *Phase2, float *Width2) {
+    tinyxml2::XMLElement *elemSwitch = POEnetNode.NewElement( &POEnet_pwm[0]); 
+    // keep the order of id, value and others
+    elemSwitch->SetAttribute(&POEnet_id[0], id);
+    elemSwitch->SetAttribute(&POEnet_value[0], Value);
+    elemSwitch->SetAttribute(&POEnet_phase1[0], Phase1);
+    elemSwitch->SetAttribute(&POEnet_width1[0], Width1);
+    elemSwitch->SetAttribute(&POEnet_phase2[0], Phase2);
+    elemSwitch->SetAttribute(&POEnet_width2[0], Width2);
     POEnetNode.RootElement()->InsertEndChild( elemSwitch);
 }
 
@@ -386,6 +402,96 @@ void POEnet_GetSwitch(tinyxml2::XMLElement *eleSwitch) {
     }
 }
 
+void POEnet_SetPWM(tinyxml2::XMLElement *elePWM) {
+    // POETODO: translation with loValue & hiValue 
+    int myId = elePWM->IntAttribute( &POEnet_id[0]);
+    float newValue;
+    if (myId == 0) { myId = 1; } // if not (or invalid) specified take 1st 
+    tinyxml2::XMLElement *myPWM;
+    tinyxml2::XMLElement *anElement;
+    myPWM = POEnetNode.RootElement()->FirstChildElement(&POEnet_pwm[0]);
+    while (myPWM) {
+        if (myPWM->IntAttribute( &POEnet_id[0]) == myId) {
+            // look for setable value 
+            if (elePWM->QueryFloatText(&newValue) == tinyxml2::XML_SUCCESS) {
+                // Only if resolvable value
+                myPWM->SetAttribute( &POEnet_value[0], newValue);
+            }
+            // check for phase1, width1, phase2, width2 settings
+            anElement = elePWM->FirstChildElement(&POEnet_phase1[0]);
+            if (anElement) {
+                // found the phase1 -> query for new value
+                if (anElement->QueryFloatText(&newValue) == tinyxml2::XML_SUCCESS) {
+                    // Only if resolvable value
+                    myPWM->SetAttribute( &POEnet_phase1[0], newValue);
+                }
+            }
+            anElement = elePWM->FirstChildElement(&POEnet_width1[0]);
+            if (anElement) {
+                // found the width1 -> query for new value
+                if (anElement->QueryFloatText(&newValue) == tinyxml2::XML_SUCCESS) {
+                    // Only if resolvable value
+                    myPWM->SetAttribute( &POEnet_width1[0], newValue);
+                }
+            }
+            anElement = elePWM->FirstChildElement(&POEnet_phase2[0]);
+            if (anElement) {
+                // found the phase2 -> query for new value
+                if (anElement->QueryFloatText(&newValue) == tinyxml2::XML_SUCCESS) {
+                    // Only if resolvable value
+                    myPWM->SetAttribute( &POEnet_phase2[0], newValue);
+                }
+            }
+            anElement = elePWM->FirstChildElement(&POEnet_width2[0]);
+            if (anElement) {
+                // found the width2 -> query for new value
+                if (anElement->QueryFloatText(&newValue) == tinyxml2::XML_SUCCESS) {
+                    // Only if resolvable value
+                    myPWM->SetAttribute( &POEnet_width2[0], newValue);
+                }
+            }
+            myPWM = 0;
+        } else {
+            myPWM = myPWM->NextSiblingElement(&POEnet_pwm[0]);
+        }
+    }
+}
+
+void POEnet_GetPWM(tinyxml2::XMLElement *elePWM) {
+    // POETODO: translation with loValue & hiValue 
+    int myId = elePWM->IntAttribute( &POEnet_id[0]);
+    if (myId == 0) { myId = 1; } // if not (or invalid) specified take 1st 
+    tinyxml2::XMLElement *myPWM;
+    tinyxml2::XMLElement *anElement;
+    myPWM = POEnetNode.RootElement()->FirstChildElement(&POEnet_pwm[0]);
+    while (myPWM) {
+        if (myPWM->IntAttribute( &POEnet_id[0]) == myId) {
+            elePWM->SetAttribute(&POEnet_value[0], myPWM->Attribute(&POEnet_value[0]));
+
+            anElement = elePWM->GetDocument()->NewElement(&POEnet_phase1[0]);
+            anElement->SetAttribute(&POEnet_value[0], myPWM->Attribute(&POEnet_phase1[0]));
+            elePWM->InsertEndChild( anElement);
+
+            anElement = elePWM->GetDocument()->NewElement(&POEnet_width1[0]);
+            anElement->SetAttribute(&POEnet_value[0], myPWM->Attribute(&POEnet_width1[0]));
+            elePWM->InsertEndChild( anElement);
+
+            anElement = elePWM->GetDocument()->NewElement(&POEnet_phase2[0]);
+            anElement->SetAttribute(&POEnet_value[0], myPWM->Attribute(&POEnet_phase2[0]));
+            elePWM->InsertEndChild( anElement);
+
+            anElement = elePWM->GetDocument()->NewElement(&POEnet_width2[0]);
+            anElement->SetAttribute(&POEnet_value[0], myPWM->Attribute(&POEnet_width2[0]));
+            elePWM->InsertEndChild( anElement);
+
+            myPWM = 0;
+        } else {
+            myPWM = myPWM->NextSiblingElement(&POEnet_pwm[0]);
+        }
+    }
+}
+
+
 void POEnet_Interpret(const char *buffer) {
     POEnetCommand.Clear();
     POEnetCommand.Parse(buffer);
@@ -414,9 +520,14 @@ void POEnet_Interpret(const char *buffer) {
             if (POEnetCommand.RootElement()->IntAttribute(&POEnet_node[0]) == *node_id) {
                 POEnet_SetSwitch(POEnetCommand.RootElement());
                 POEnet_GetSwitch(POEnetCommand.RootElement());
-                // POETODO: Clear element and signal to state machine
+            }
+        } else if (!strcmp(POEnetCommand.RootElement()->Name(), &POEnet_pwm[0])) {
+            if (POEnetCommand.RootElement()->IntAttribute(&POEnet_node[0]) == *node_id) {
+                POEnet_SetPWM(POEnetCommand.RootElement());
+                POEnet_GetPWM(POEnetCommand.RootElement());
             }
         }
+        // POETODO: Clear element and signal to state machine
     }
 }
 

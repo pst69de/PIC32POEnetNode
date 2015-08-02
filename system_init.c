@@ -169,6 +169,9 @@ void SYS_Startup(void) {
     PLIB_USART_Enable(APP_UART_RX_ID);
     //PLIB_UART_ReceiverEnable(APP_UART_RX_ID);
 #endif
+#ifdef APP_USE_PWM
+    PWM_StartUp();
+#endif 
 }
 
 /* Initialize the System */
@@ -191,6 +194,9 @@ void SYS_Initialize ( void *data )
 #endif
 #ifdef APP_USE_ADC
     ADC_Initialize();
+#endif
+#ifdef APP_USE_PWM
+    PWM_Initialize();
 #endif
     // Initialize the Application
     APP_Initialize();
