@@ -143,13 +143,12 @@ void APP_Initialize ( void )
 #endif // ifdef APP_USE_DIO
 #ifdef APP_USE_PWM
     appData.PWM_Frequency = 50.0f;
-    appData.PWM_Phase1    = 0.0f;
-    appData.PWM_Width1    = 10.0f;
-    appData.PWM_Phase2    = 50.0f;
-    appData.PWM_Width2    = 10.0f;
+    appData.PWM_Phase     = 50.0f;
+    appData.PWM_Width     = 5.0f;
+    appData.PWM_Width2    = 5.0f;
     appData.PWM_PreScale  = APP_PWM_TMR_PRESCALE;
     appData.PWM_PSFactor  = APP_PWM_TMR_PSFactor;
-    appData.PWM_Width     = APP_PWM_TMR_INIT;
+    appData.PWM_Cycle     = APP_PWM_TMR_INIT;
     appData.PWM_Start1    = APP_PWM_OC1_On;
     appData.PWM_Stop1     = APP_PWM_OC1_Off;
     appData.PWM_Start2    = APP_PWM_OC2_On;
@@ -173,6 +172,23 @@ void APP_LCD_WriteSize(int line, int pos, int size) {
     // not exact, but as we are dealing with values up to 1024 write A24 instead
     if (i) { APP_LCD_PrintChar(line, pos, 'A');}
 }
+
+void APP_LCD_WriteFrequency(int line, int pos, float frequency) {
+    char strFreq[APP_STRING_SIZE];
+    ClearString(&strFreq[0]);
+    sprintf(&strFreq[0],"%4.1fHz", frequency);
+    APP_LCD_Print(line,pos,strFreq);
+}
+
+void APP_LCD_WritePercent(int line, int pos, float percent) {
+    char strPerc[APP_STRING_SIZE];
+    ClearString(&strPerc[0]);
+    sprintf(&strPerc[0],"%2f", percent);
+    strPerc[2] = '%';
+    strPerc[3] = '\0';
+    APP_LCD_Print(line,pos,strPerc);
+}
+
 
 void APP_LCD_SetNodeId(void) {
     APP_LCD_Print(1, 15, &appData.POEnetUID[0]);
@@ -386,7 +402,7 @@ void APP_Tasks ( void )
 #endif
 #endif // ifdef APP_USE_DIO
 #ifdef APP_USE_PWM
-            POEnet_AddPWM(1, &appData.PWM_Frequency, &appData.PWM_Phase1, &appData.PWM_Width1, &appData.PWM_Phase2, &appData.PWM_Width2);
+            POEnet_AddPWM(1, &appData.PWM_Frequency, &appData.PWM_Phase, &appData.PWM_Width, &appData.PWM_Width2);
 #endif // ifdef APP_USE_PWM
 #ifdef APP_USE_UART
             // init UART before USB
@@ -419,8 +435,12 @@ void APP_Tasks ( void )
                     APP_LCD_PrintChar(0,7,numChar[appData.time.Seconds / 10]);
                     APP_LCD_Print( 1, 0, "POEnet UID____");
                     APP_LCD_Print( 1, 10, &appData.POEnetUID[0]);
-                    APP_LCD_Print( 2, 0, "00.0@@ 00.0@@ %%% *#");
-                    APP_LCD_Print( 3, 0, "00.0@@ 00.0@@ %%% *#");
+                    APP_LCD_Print( 2, 0, "00.0@@ 00.0@@  *# *#");
+                    APP_LCD_ClearLine(3);
+                    APP_LCD_WriteFrequency(3,0,appData.PWM_Frequency);
+                    APP_LCD_WritePercent(3,9,appData.PWM_Width);
+                    APP_LCD_WritePercent(3,13,appData.PWM_Phase);
+                    APP_LCD_WritePercent(3,17,appData.PWM_Width2);
                     appData.LCD_Return_AppState = appData.LCD_Init_Return;
                     appData.state = APP_LCD_UPDATE;
                 } else {
@@ -598,69 +618,69 @@ void APP_Tasks ( void )
 #ifdef APP_DI_1
                 appData.DI_Value[0] = DIO_ReadDI(1);
                 if (appData.DI_Value[0]) {
-                    APP_LCD_PrintChar(2,19,appData.DI_HiValue[0][0]);
+                    APP_LCD_PrintChar(2,16,appData.DI_HiValue[0][0]);
                 } else {
-                    APP_LCD_PrintChar(2,19,appData.DI_LoValue[0][0]);
+                    APP_LCD_PrintChar(2,16,appData.DI_LoValue[0][0]);
                 }
 #endif // ifdef APP_DI_1
 #ifdef APP_DI_2
                 appData.DI_Value[1] = DIO_ReadDI(2);
                 if (appData.DI_Value[1]) {
-                    APP_LCD_PrintChar(3,19,appData.DI_HiValue[1][0]);
+                    APP_LCD_PrintChar(2,19,appData.DI_HiValue[1][0]);
                 } else {
-                    APP_LCD_PrintChar(3,19,appData.DI_LoValue[1][0]);
+                    APP_LCD_PrintChar(2,19,appData.DI_LoValue[1][0]);
                 }
 #endif // ifdef APP_DI_2
 #ifdef APP_DI_3
                 appData.DI_Value[2] = DIO_ReadDI(3);
                 if (appData.DI_Value[2]) {
-                    APP_LCD_PrintChar(2,19,appData.DI_HiValue[2][0]);
+                    APP_LCD_PrintChar(2,16,appData.DI_HiValue[2][0]);
                 } else {
-                    APP_LCD_PrintChar(2,19,appData.DI_LoValue[2][0]);
+                    APP_LCD_PrintChar(2,16,appData.DI_LoValue[2][0]);
                 }
 #endif // ifdef APP_DI_3
 #ifdef APP_DI_4
                 appData.DI_Value[3] = DIO_ReadDI(4);
                 if (appData.DI_Value[3]) {
-                    APP_LCD_PrintChar(3,19,appData.DI_HiValue[3][0]);
+                    APP_LCD_PrintChar(2,19,appData.DI_HiValue[3][0]);
                 } else {
-                    APP_LCD_PrintChar(3,19,appData.DI_LoValue[3][0]);
+                    APP_LCD_PrintChar(2,19,appData.DI_LoValue[3][0]);
                 }
 #endif // ifdef APP_DI_4
 #ifdef APP_DO_1
                 if (appData.DO_Value[0]) {
                     DIO_SetDO(1);
-                    APP_LCD_PrintChar(2,18,appData.DO_HiValue[0][0]);
+                    APP_LCD_PrintChar(2,15,appData.DO_HiValue[0][0]);
                 } else {
                     DIO_ClearDO(1);
-                    APP_LCD_PrintChar(2,18,appData.DO_LoValue[0][0]);
+                    APP_LCD_PrintChar(2,15,appData.DO_LoValue[0][0]);
                 }
 #endif // ifdef APP_DO_1
 #ifdef APP_DO_2
                 if (appData.DO_Value[1]) {
                     DIO_SetDO(2);
-                    APP_LCD_PrintChar(3,18,appData.DO_HiValue[1][0]);
+                    APP_LCD_PrintChar(2,18,appData.DO_HiValue[1][0]);
                 } else {
                     DIO_ClearDO(2);
-                    APP_LCD_PrintChar(3,18,appData.DO_LoValue[1][0]);
+                    APP_LCD_PrintChar(2,18,appData.DO_LoValue[1][0]);
                 }
 #endif // ifdef APP_DO_2
 #ifdef APP_DO_3
                 if (appData.DO_Value[2]) {
                     DIO_SetDO(3);
-                    APP_LCD_PrintChar(2,18,appData.DO_HiValue[2][0]);
+                    APP_LCD_PrintChar(2,15,appData.DO_HiValue[2][0]);
                 } else {
                     DIO_ClearDO(3);
-                    APP_LCD_PrintChar(2,18,appData.DO_LoValue[2][0]);
+                    APP_LCD_PrintChar(2,15,appData.DO_LoValue[2][0]);
                 }
 #endif // ifdef APP_DO_3
 #ifdef APP_DO_4
                 if (appData.DO_Value[3]) {
                     DIO_SetDO(4);
-                    APP_LCD_PrintChar(3,18,appData.DO_HiValue[3][0]);
+                    APP_LCD_PrintChar(2,18,appData.DO_HiValue[3][0]);
                 } else {
                     DIO_ClearDO(4);
-                    APP_LCD_PrintChar(3,18,appData.DO_LoValue[3][0]);
+                    APP_LCD_PrintChar(2,18,appData.DO_LoValue[3][0]);
                 }
 #endif // ifdef APP_DO_4
 #endif // ifdef APP_USE_DIO
@@ -736,42 +756,49 @@ void APP_Tasks ( void )
                 }
                 // Calculation of Timer Width
                 m = (int)(APP_PBCLK_FREQ / (appData.PWM_PSFactor * appData.PWM_Frequency));
-                if (appData.PWM_Width != m) {
+                if (appData.PWM_Cycle != m) {
                     newPWM = true;
-                    appData.PWM_Width = m;
+                    appData.PWM_Cycle = m;
                 }
                 // POETODO: if any of PWM_Phase1, PWM_Phase1+PWM_Width1, PWM_Phase2, PWM_Phase2+PWM_Width2 > 100% then the MCU gets an invalid value
                 // solution may be based on shifting all values around the corner, not yet implemented
+                // up to 50%, = Phase%, over 50%, = 100% - Phase% (Channels swapped ???)
                 // Calculation of Start1
-                m = (int)((appData.PWM_Width * appData.PWM_Phase1 / 100.0f) + 1);
+                m = (int)((appData.PWM_Cycle * 0.0f / 100.0f) + 1);
                 if (appData.PWM_Start1 != m) {
                     newPWM = true;
                     appData.PWM_Start1 = m;
                 }
                 // Calculation of Stop1
-                m = (int)((appData.PWM_Width * (appData.PWM_Phase1 + appData.PWM_Width1) / 100.0f) + 1);
+                m = (int)((appData.PWM_Cycle * (0.0f + appData.PWM_Width) / 100.0f) + 1);
                 if (appData.PWM_Stop1 != m) {
                     newPWM = true;
                     appData.PWM_Stop1 = m;
                 }
                 // Calculation of Start2
-                m = (int)((appData.PWM_Width * appData.PWM_Phase2 / 100.0f) + 1);
+                m = (int)((appData.PWM_Cycle * appData.PWM_Phase / 100.0f) + 1);
                 if (appData.PWM_Start2 != m) {
                     newPWM = true;
                     appData.PWM_Start2 = m;
                 }
                 // Calculation of Stop2
-                m = (int)((appData.PWM_Width * (appData.PWM_Phase2 + appData.PWM_Width2) / 100.0f) + 1);
+                m = (int)((appData.PWM_Cycle * (appData.PWM_Phase + appData.PWM_Width2) / 100.0f) + 1);
                 if (appData.PWM_Stop2 != m) {
                     newPWM = true;
                     appData.PWM_Stop2 = m;
                 }
                 // Set new timing if needed
                 if (newPWM) {
+                    // set up Display values
+                    APP_LCD_ClearLine(3);
+                    APP_LCD_WriteFrequency(3,0,appData.PWM_Frequency);
+                    APP_LCD_WritePercent(3,9,appData.PWM_Width);
+                    APP_LCD_WritePercent(3,13,appData.PWM_Phase);
+                    APP_LCD_WritePercent(3,17,appData.PWM_Width2);
 #ifdef APP_PWM_OC2_ID
-                    PWM_SetValues( appData.PWM_PreScale, appData.PWM_Width, appData.PWM_Start1, appData.PWM_Stop1, appData.PWM_Start2, appData.PWM_Stop2);
+                    PWM_SetValues( appData.PWM_PreScale, appData.PWM_Cycle, appData.PWM_Start1, appData.PWM_Stop1, appData.PWM_Start2, appData.PWM_Stop2);
 #else // ifdef APP_PWM_OC2_ID
-                    PWM_SetValues( appData.PWM_PreScale, appData.PWM_Width, appData.PWM_Start1, appData.PWM_Stop1);
+                    PWM_SetValues( appData.PWM_PreScale, appData.PWM_Cycle, appData.PWM_Start1, appData.PWM_Stop1);
 #endif // else APP_PWM_OC2_ID
                 }
 #endif // ifdef APP_USE_PWM
@@ -829,26 +856,34 @@ void APP_Tasks ( void )
                 sprintf(&appData.ADC_Representation[appData.ADC_PinIdx - 1][0], "%.1f%s",appData.ADC_Value[appData.ADC_PinIdx - 1],&appData.ADC_Unit[appData.ADC_PinIdx - 1][0]);
 #ifdef APP_ADC1_INPUT_POS
                 if (appData.ADC_PinIdx == 1) {
-                    APP_LCD_Print(2, 0, &POEnet_empty[0]);
-                    APP_LCD_Print(2, 0, &appData.ADC_Representation[0][0]);
+                    // ADC 1 & 2 for future Normature of Input
+                    //APP_LCD_Print(2, 0, &POEnet_empty[0]);
+                    //APP_LCD_Print(2, 0, &appData.ADC_Representation[0][0]);
                 }
 #endif // ifdef APP_ADC1_INPUT_POS
 #ifdef APP_ADC2_INPUT_POS
                 if (appData.ADC_PinIdx == 2) {
-                    APP_LCD_Print(2, 7, &POEnet_empty[0]);
-                    APP_LCD_Print(2, 7, &appData.ADC_Representation[1][0]);
+                    // ADC 1 & 2 for future Normature of Input
+                    //APP_LCD_Print(2, 7, &POEnet_empty[0]);
+                    //APP_LCD_Print(2, 7, &appData.ADC_Representation[1][0]);
                 }
 #endif // ifdef APP_ADC2_INPUT_POS
 #ifdef APP_ADC3_INPUT_POS
                 if (appData.ADC_PinIdx == 3) {
-                    APP_LCD_Print(3, 0, &POEnet_empty[0]);
-                    APP_LCD_Print(3, 0, &appData.ADC_Representation[2][0]);
+                    // ADC 1 & 2 for future Normature of Input
+                    //APP_LCD_Print(3, 0, &POEnet_empty[0]);
+                    //APP_LCD_Print(3, 0, &appData.ADC_Representation[2][0]);
+                    APP_LCD_Print(2, 0, &POEnet_empty[0]);
+                    APP_LCD_Print(2, 0, &appData.ADC_Representation[2][0]);
                 }
 #endif // ifdef APP_ADC3_INPUT_POS
 #ifdef APP_ADC4_INPUT_POS
                 if (appData.ADC_PinIdx == 4) {
-                    APP_LCD_Print(3, 7, &POEnet_empty[0]);
-                    APP_LCD_Print(3, 7, &appData.ADC_Representation[3][0]);
+                    // ADC 1 & 2 for future Normature of Input
+                    //APP_LCD_Print(3, 7, &POEnet_empty[0]);
+                    //APP_LCD_Print(3, 7, &appData.ADC_Representation[3][0]);
+                    APP_LCD_Print(2, 7, &POEnet_empty[0]);
+                    APP_LCD_Print(2, 7, &appData.ADC_Representation[3][0]);
                 }
 #endif // ifdef APP_ADC4_INPUT_POS
                 appData.state = appData.ADC_Return_AppState;

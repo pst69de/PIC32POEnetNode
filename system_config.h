@@ -281,9 +281,9 @@ extern "C" {
 #define APP_PWM_OC1_Mode
 #define APP_PWM_OC1_Function      OUTPUT_FUNC_OC1
 #define APP_PWM_OC1_PPSOut        OUTPUT_PIN_RPB4
-// initial on / off values 10% (0 Phase)
+// initial on / off values 5% (0 Phase)
 #define APP_PWM_OC1_On            0x0001
-#define APP_PWM_OC1_Off           0x1771
+#define APP_PWM_OC1_Off           0x0BB9
 // OC4 via PPS @ RPA4
 #define APP_PWM_OC2_ID            OC_ID_4
 #define APP_PWM_OC2_PORTS_ID      PORTS_ID_0
@@ -293,9 +293,9 @@ extern "C" {
 #define APP_PWM_OC2_Mode
 #define APP_PWM_OC2_Function      OUTPUT_FUNC_OC4
 #define APP_PWM_OC2_PPSOut        OUTPUT_PIN_RPA4
-// initial on / off values 10% (Pi/2 Phase)
+// initial on / off values 5% (Pi/2 Phase)
 #define APP_PWM_OC2_On            0x7531
-#define APP_PWM_OC2_Off           0x8CA0
+#define APP_PWM_OC2_Off           0x80E9
 #endif // ifdef APP_USE_PWM
 
 #ifdef	__cplusplus

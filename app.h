@@ -152,13 +152,12 @@ typedef struct
 #endif // ifdef APP_USE_DIO
 #ifdef APP_USE_PWM
     float             PWM_Frequency;
-    float             PWM_Phase1;
-    float             PWM_Width1;
-    float             PWM_Phase2;
+    float             PWM_Phase;
+    float             PWM_Width;
     float             PWM_Width2;
     TMR_PRESCALE      PWM_PreScale;
     int               PWM_PSFactor;
-    int               PWM_Width;
+    int               PWM_Cycle;
     int               PWM_Start1;
     int               PWM_Stop1;
     int               PWM_Start2;
