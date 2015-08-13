@@ -128,6 +128,11 @@ void INT_Initialize(void) {
     PLIB_INT_VectorPrioritySet(APP_INT_ID, INT_VECTOR_UART1, INT_PRIORITY_LEVEL1);
     PLIB_INT_VectorSubPrioritySet(APP_INT_ID, INT_VECTOR_UART1, INT_SUBPRIORITY_LEVEL0);
 #endif // of ifdef APP_USE_UART
+#ifdef APP_USE_PWM
+    // set priority and enable UART RX
+    PLIB_INT_VectorPrioritySet(APP_INT_ID, APP_PWM_TMR_INT_VECTOR, INT_PRIORITY_LEVEL5);
+    PLIB_INT_VectorSubPrioritySet(APP_INT_ID, APP_PWM_TMR_INT_VECTOR, INT_SUBPRIORITY_LEVEL0);
+#endif // ifdef APP_USE_PWM
     // Enable the global interrupts
     PLIB_INT_Enable(APP_INT_ID);
     APP_LCD_InterruptEnable(APP_INT_ID);
@@ -142,6 +147,9 @@ void INT_Initialize(void) {
     //PLIB_INT_SourceEnable(APP_INT_ID, INT_SOURCE_UART_1_ERROR);
     //PLIB_INT_SourceEnable(APP_INT_ID, INT_SOURCE_UART_1_TRANSMIT);
 #endif
+#ifdef APP_USE_PWM
+    PLIB_INT_SourceEnable(APP_INT_ID, APP_PWM_TMR_INT_SOURCE);
+#endif // ifdef APP_USE_PWM
 }
 
 void SYS_Startup(void) {

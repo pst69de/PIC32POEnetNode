@@ -28,23 +28,18 @@ void PWM_Initialize(void);
 // StartUp TMR/OC module of MCU
 void PWM_StartUp(void);
 
-#ifdef APP_PWM_OC2_ID
+void PWM_Handle_ISR(void);
+
 void PWM_SetValues(
     TMR_PRESCALE pwmPreScale
-,   int pwmWidth
+,   int pwmCycle
 ,   int pwmStart1
 ,   int pwmStop1
 ,   int pwmStart2
 ,   int pwmStop2
+,   int pwmStart3
+,   int pwmStop3
 );
-#else // ifdef APP_PWM_OC2_ID
-void PWM_SetValues(
-    TMR_PRESCALE pwmPreScale
-,   int pwmWidth
-,   int pwmStart1
-,   int pwmStop1
-);
-#endif // else APP_PWM_OC2_ID
 
 #endif // ifdef APP_PWM_OC1_ID
 

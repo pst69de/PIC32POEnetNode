@@ -143,16 +143,39 @@ void APP_Initialize ( void )
 #endif // ifdef APP_USE_DIO
 #ifdef APP_USE_PWM
     appData.PWM_Frequency = 50.0f;
-    appData.PWM_Phase     = 50.0f;
+    appData.PWM_Phase     = 33.0f;
     appData.PWM_Width     = 5.0f;
     appData.PWM_Width2    = 5.0f;
+    appData.PWM_Phase2    = 67.0f;
+    appData.PWM_Width3    = 5.0f;
+    appData.PWM_Phase3    = 0.0f;
+    appData.PWM_Width4    = 0.0f;
     appData.PWM_PreScale  = APP_PWM_TMR_PRESCALE;
     appData.PWM_PSFactor  = APP_PWM_TMR_PSFactor;
     appData.PWM_Cycle     = APP_PWM_TMR_INIT;
     appData.PWM_Start1    = APP_PWM_OC1_On;
     appData.PWM_Stop1     = APP_PWM_OC1_Off;
+#ifdef APP_PWM_OC2_ID
     appData.PWM_Start2    = APP_PWM_OC2_On;
     appData.PWM_Stop2     = APP_PWM_OC2_Off;
+#else
+    appData.PWM_Start2    = 0;
+    appData.PWM_Stop2     = 0;
+#endif
+#ifdef APP_PWM_OC3_ID
+    appData.PWM_Start3    = APP_PWM_OC3_On;
+    appData.PWM_Stop3     = APP_PWM_OC3_Off;
+#else
+    appData.PWM_Start3    = 0;
+    appData.PWM_Stop3     = 0;
+#endif
+#ifdef APP_PWM_OC4_ID
+    appData.PWM_Start4    = APP_PWM_OC4_On;
+    appData.PWM_Stop4     = APP_PWM_OC4_Off;
+#else
+    appData.PWM_Start4    = 0;
+    appData.PWM_Stop4     = 0;
+#endif
 #endif // ifdef APP_USE_PWM
     // Place the App state machine in its initial state.
     appData.state = APP_STATE_INIT;
@@ -685,8 +708,9 @@ void APP_Tasks ( void )
 #endif // ifdef APP_DO_4
 #endif // ifdef APP_USE_DIO
 #ifdef APP_USE_PWM
-                // POETODO: set PWM if needed
+                // set PWM if needed
                 newPWM = false;
+                // POETODO: if 65535 > cycle > 400 keep PreScale
                 // Calculation of PreScale frequency * maxwidth must be greater than prescaled timer clock
                 if (65535 > (APP_PBCLK_FREQ / appData.PWM_Frequency)) {
                     // TMR_PRESCALE_VALUE_1 = 0x00,
@@ -787,6 +811,30 @@ void APP_Tasks ( void )
                     newPWM = true;
                     appData.PWM_Stop2 = m;
                 }
+                // Calculation of Start3
+                m = (int)((appData.PWM_Cycle * appData.PWM_Phase2 / 100.0f) + 1);
+                if (appData.PWM_Start3 != m) {
+                    newPWM = true;
+                    appData.PWM_Start3 = m;
+                }
+                // Calculation of Stop3
+                m = (int)((appData.PWM_Cycle * (appData.PWM_Phase2 + appData.PWM_Width3) / 100.0f) + 1);
+                if (appData.PWM_Stop3 != m) {
+                    newPWM = true;
+                    appData.PWM_Stop3 = m;
+                }
+                // Calculation of Start4
+                m = (int)((appData.PWM_Cycle * appData.PWM_Phase3 / 100.0f) + 1);
+                if (appData.PWM_Start4 != m) {
+                    newPWM = true;
+                    appData.PWM_Start4 = m;
+                }
+                // Calculation of Stop4
+                m = (int)((appData.PWM_Cycle * (appData.PWM_Phase3 + appData.PWM_Width4) / 100.0f) + 1);
+                if (appData.PWM_Stop4 != m) {
+                    newPWM = true;
+                    appData.PWM_Stop4 = m;
+                }
                 // Set new timing if needed
                 if (newPWM) {
                     // set up Display values
@@ -794,12 +842,19 @@ void APP_Tasks ( void )
                     APP_LCD_WriteFrequency(3,0,appData.PWM_Frequency);
                     APP_LCD_WritePercent(3,9,appData.PWM_Width);
                     APP_LCD_WritePercent(3,13,appData.PWM_Phase);
-                    APP_LCD_WritePercent(3,17,appData.PWM_Width2);
-#ifdef APP_PWM_OC2_ID
-                    PWM_SetValues( appData.PWM_PreScale, appData.PWM_Cycle, appData.PWM_Start1, appData.PWM_Stop1, appData.PWM_Start2, appData.PWM_Stop2);
-#else // ifdef APP_PWM_OC2_ID
-                    PWM_SetValues( appData.PWM_PreScale, appData.PWM_Cycle, appData.PWM_Start1, appData.PWM_Stop1);
-#endif // else APP_PWM_OC2_ID
+                    APP_LCD_WritePercent(3,17,appData.PWM_Phase2);
+                    PWM_SetValues( 
+                          appData.PWM_PreScale
+                        , appData.PWM_Cycle
+                        , appData.PWM_Start1
+                        , appData.PWM_Stop1
+                        , appData.PWM_Start2
+                        , appData.PWM_Stop2
+                        , appData.PWM_Start3
+                        , appData.PWM_Stop3
+                        , appData.PWM_Start4
+                        , appData.PWM_Stop4
+                        );
                 }
 #endif // ifdef APP_USE_PWM
                 // maybe indirect redirect to return, when no ADC is used

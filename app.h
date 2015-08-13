@@ -154,7 +154,11 @@ typedef struct
     float             PWM_Frequency;
     float             PWM_Phase;
     float             PWM_Width;
+    float             PWM_Phase2;
     float             PWM_Width2;
+    float             PWM_Phase3;
+    float             PWM_Width3;
+    float             PWM_Width4;
     TMR_PRESCALE      PWM_PreScale;
     int               PWM_PSFactor;
     int               PWM_Cycle;
@@ -162,6 +166,10 @@ typedef struct
     int               PWM_Stop1;
     int               PWM_Start2;
     int               PWM_Stop2;
+    int               PWM_Start3;
+    int               PWM_Stop3;
+    int               PWM_Start4;
+    int               PWM_Stop4;
 #endif // ifdef APP_USE_PWM
 } APP_DATA;
 

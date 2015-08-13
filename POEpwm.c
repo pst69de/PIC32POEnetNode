@@ -26,13 +26,21 @@ void PWM_Initialize(void) {
 #ifdef APP_PWM_OC2_ID
     PLIB_OC_Disable(APP_PWM_OC2_ID);
 #endif // ifdef APP_PWM_OC2_ID
+#ifdef APP_PWM_OC3_ID
+    PLIB_OC_Disable(APP_PWM_OC3_ID);
+#endif // ifdef APP_PWM_OC3_ID
+#ifdef APP_PWM_OC4_ID
+    PLIB_OC_Disable(APP_PWM_OC4_ID);
+#endif // ifdef APP_PWM_OC4_ID
     // Set the prescaler, and set the clock source as internal
     PLIB_TMR_ClockSourceSelect(APP_PWM_TMR_ID, TMR_CLOCK_SOURCE_PERIPHERAL_CLOCK);
     PLIB_TMR_PrescaleSelect(APP_PWM_TMR_ID, APP_PWM_TMR_PRESCALE);
+    PWM_PreScale = APP_PWM_TMR_PRESCALE;
     // Clear the timer
     PLIB_TMR_Counter16BitClear(APP_PWM_TMR_ID);
     // Load the period register
     PLIB_TMR_Period16BitSet(APP_PWM_TMR_ID, APP_PWM_TMR_INIT);
+    PWM_Cycle = APP_PWM_TMR_INIT;
     // OC1 Init
     // port inits
     PLIB_PORTS_PinClear(APP_PWM_OC1_PORTS_ID, APP_PWM_OC1_PORT_CHANNEL, APP_PWM_OC1_PIN);
@@ -45,8 +53,10 @@ void PWM_Initialize(void) {
     PLIB_OC_BufferSizeSelect(APP_PWM_OC1_ID, OC_BUFFER_SIZE_16BIT);
     // Set buffer(primary compare) value
     PLIB_OC_Buffer16BitSet(APP_PWM_OC1_ID, APP_PWM_OC1_On);
+    PWM_Start1 = APP_PWM_OC1_On;
     // Set pulse width(secondary compare) value
     PLIB_OC_PulseWidth16BitSet(APP_PWM_OC1_ID, APP_PWM_OC1_Off);
+    PWM_Stop1 = APP_PWM_OC1_Off;
 #ifdef APP_PWM_OC2_ID
     // OC2 Init
     // port inits
@@ -60,9 +70,47 @@ void PWM_Initialize(void) {
     PLIB_OC_BufferSizeSelect(APP_PWM_OC2_ID, OC_BUFFER_SIZE_16BIT);
     // Set buffer(primary compare) value
     PLIB_OC_Buffer16BitSet(APP_PWM_OC2_ID, APP_PWM_OC2_On);
+    PWM_Start2 = APP_PWM_OC2_On;
     // Set pulse width(secondary compare) value
     PLIB_OC_PulseWidth16BitSet(APP_PWM_OC2_ID, APP_PWM_OC2_Off);
+    PWM_Stop2 = APP_PWM_OC2_Off;
 #endif // ifdef APP_PWM_OC2_ID
+#ifdef APP_PWM_OC3_ID
+    // OC3 Init
+    // port inits
+    PLIB_PORTS_PinClear(APP_PWM_OC3_PORTS_ID, APP_PWM_OC3_PORT_CHANNEL, APP_PWM_OC3_PIN);
+    PLIB_PORTS_PinDirectionOutputSet(APP_PWM_OC3_PORTS_ID, APP_PWM_OC3_PORT_CHANNEL, APP_PWM_OC3_PIN);
+    APP_PWM_OC3_Mode;
+    PLIB_PORTS_RemapOutput(APP_PWM_OC3_PORTS_ID, APP_PWM_OC3_Function, APP_PWM_OC3_PPSOut);
+    // Select compare mode
+    PLIB_OC_ModeSelect(APP_PWM_OC3_ID, OC_DUAL_COMPARE_CONTINUOUS_PULSE_MODE);
+    // Set buffer size to 16-bits
+    PLIB_OC_BufferSizeSelect(APP_PWM_OC3_ID, OC_BUFFER_SIZE_16BIT);
+    // Set buffer(primary compare) value
+    PLIB_OC_Buffer16BitSet(APP_PWM_OC3_ID, APP_PWM_OC3_On);
+    PWM_Start3 = APP_PWM_OC3_On;
+    // Set pulse width(secondary compare) value
+    PLIB_OC_PulseWidth16BitSet(APP_PWM_OC3_ID, APP_PWM_OC3_Off);
+    PWM_Stop3 = APP_PWM_OC3_Off;
+#endif // ifdef APP_PWM_OC3_ID
+#ifdef APP_PWM_OC4_ID
+    // OC4 Init
+    // port inits
+    PLIB_PORTS_PinClear(APP_PWM_OC4_PORTS_ID, APP_PWM_OC4_PORT_CHANNEL, APP_PWM_OC4_PIN);
+    PLIB_PORTS_PinDirectionOutputSet(APP_PWM_OC4_PORTS_ID, APP_PWM_OC4_PORT_CHANNEL, APP_PWM_OC4_PIN);
+    APP_PWM_OC4_Mode;
+    PLIB_PORTS_RemapOutput(APP_PWM_OC4_PORTS_ID, APP_PWM_OC4_Function, APP_PWM_OC4_PPSOut);
+    // Select compare mode
+    PLIB_OC_ModeSelect(APP_PWM_OC4_ID, OC_DUAL_COMPARE_CONTINUOUS_PULSE_MODE);
+    // Set buffer size to 16-bits
+    PLIB_OC_BufferSizeSelect(APP_PWM_OC4_ID, OC_BUFFER_SIZE_16BIT);
+    // Set buffer(primary compare) value
+    PLIB_OC_Buffer16BitSet(APP_PWM_OC4_ID, APP_PWM_OC4_On);
+    PWM_Start4 = APP_PWM_OC4_On;
+    // Set pulse width(secondary compare) value
+    PLIB_OC_PulseWidth16BitSet(APP_PWM_OC4_ID, APP_PWM_OC4_Off);
+    PWM_Stop4 = APP_PWM_OC4_Off;
+#endif // ifdef APP_PWM_OC4_ID
 }
 
 // StartUp TMR/OC module of MCU
@@ -73,77 +121,132 @@ void PWM_StartUp(void) {
     // Enable OC 2
     PLIB_OC_Enable(APP_PWM_OC2_ID);
 #endif // ifdef APP_PWM_OC2_ID
+#ifdef APP_PWM_OC3_ID
+    // Enable OC 3
+    PLIB_OC_Enable(APP_PWM_OC3_ID);
+#endif // ifdef APP_PWM_OC3_ID
+#ifdef APP_PWM_OC4_ID
+    // Enable OC 4
+    PLIB_OC_Enable(APP_PWM_OC4_ID);
+#endif // ifdef APP_PWM_OC4_ID
     // Start the timer
     PLIB_TMR_Start(APP_PWM_TMR_ID);
 }
 
+TMR_PRESCALE PWM_PreScale;
+int PWM_Cycle;
+int PWM_Start1;
+int PWM_Stop1;
+int PWM_Start2;
+int PWM_Stop2;
+int PWM_Start3;
+int PWM_Stop3;
+int PWM_Start4;
+int PWM_Stop4;
+
+void PWM_Handle_ISR(void) {
+    PLIB_TMR_Period16BitSet(APP_PWM_TMR_ID, PWM_Cycle);
+    PLIB_OC_Buffer16BitSet(APP_PWM_OC1_ID, PWM_Start1);
+    PLIB_OC_PulseWidth16BitSet(APP_PWM_OC1_ID, PWM_Stop1);
 #ifdef APP_PWM_OC2_ID
+    PLIB_OC_Buffer16BitSet(APP_PWM_OC2_ID, PWM_Start2);
+    PLIB_OC_PulseWidth16BitSet(APP_PWM_OC2_ID, PWM_Stop2);
+#endif // ifdef APP_PWM_OC2_ID
+#ifdef APP_PWM_OC3_ID
+    PLIB_OC_Buffer16BitSet(APP_PWM_OC3_ID, PWM_Start3);
+    PLIB_OC_PulseWidth16BitSet(APP_PWM_OC3_ID, PWM_Stop3);
+#endif // ifdef APP_PWM_OC3_ID
+#ifdef APP_PWM_OC4_ID
+    PLIB_OC_Buffer16BitSet(APP_PWM_OC4_ID, PWM_Start4);
+    PLIB_OC_PulseWidth16BitSet(APP_PWM_OC4_ID, PWM_Stop4);
+#endif // ifdef APP_PWM_OC4_ID
+}
+
 void PWM_SetValues(
     TMR_PRESCALE pwmPreScale
-,   int pwmWidth
+,   int pwmCycle
 ,   int pwmStart1
 ,   int pwmStop1
 ,   int pwmStart2
 ,   int pwmStop2
+,   int pwmStart3
+,   int pwmStop3
 ) {
-    // Stop the timer
-    PLIB_TMR_Stop(APP_PWM_TMR_ID);
-    // Disable OC's
-    PLIB_OC_Disable(APP_PWM_OC1_ID);
-    PLIB_OC_Disable(APP_PWM_OC2_ID);
-    // Set the prescaler, and set the clock source as internal
-    PLIB_TMR_PrescaleSelect(APP_PWM_TMR_ID, pwmPreScale);
-    // Clear the timer
-    PLIB_TMR_Counter16BitClear(APP_PWM_TMR_ID);
-    // Load the period register
-    PLIB_TMR_Period16BitSet(APP_PWM_TMR_ID, pwmWidth);
-    // OC1 Init
-    // Set buffer(primary compare) value
-    PLIB_OC_Buffer16BitSet(APP_PWM_OC1_ID, pwmStart1);
-    // Set pulse width(secondary compare) value
-    PLIB_OC_PulseWidth16BitSet(APP_PWM_OC1_ID, pwmStop1);
-    // OC2 Init
-    // Set buffer(primary compare) value
-    PLIB_OC_Buffer16BitSet(APP_PWM_OC2_ID, pwmStart2);
-    // Set pulse width(secondary compare) value
-    PLIB_OC_PulseWidth16BitSet(APP_PWM_OC2_ID, pwmStop2);
-    // Enable OC 1
-    PLIB_OC_Enable(APP_PWM_OC1_ID);
-    // Enable OC 2
-    PLIB_OC_Enable(APP_PWM_OC2_ID);
-    // Start the timer
-    PLIB_TMR_Start(APP_PWM_TMR_ID);
+    if (pwmPreScale != PWM_PreScale) { 
+        // total update 
+        // Stop the timer
+        PLIB_TMR_Stop(APP_PWM_TMR_ID);
+        // Disable OC's
+        PLIB_OC_Disable(APP_PWM_OC1_ID);
+#ifdef APP_PWM_OC2_ID
+        PLIB_OC_Disable(APP_PWM_OC2_ID);
+#endif // ifdef APP_PWM_OC2_ID
+#ifdef APP_PWM_OC3_ID
+        PLIB_OC_Disable(APP_PWM_OC3_ID);
+#endif // ifdef APP_PWM_OC3_ID
+#ifdef APP_PWM_OC4_ID
+        PLIB_OC_Disable(APP_PWM_OC4_ID);
+#endif // ifdef APP_PWM_OC4_ID
+        // Set the prescaler, and set the clock source as internal
+        PLIB_TMR_PrescaleSelect(APP_PWM_TMR_ID, pwmPreScale);
+        // Clear the timer
+        PLIB_TMR_Counter16BitClear(APP_PWM_TMR_ID);
+        // Load the period register
+        PLIB_TMR_Period16BitSet(APP_PWM_TMR_ID, pwmWidth);
+        // OC1 Init
+        // Set buffer(primary compare) value
+        PLIB_OC_Buffer16BitSet(APP_PWM_OC1_ID, pwmStart1);
+        // Set pulse width(secondary compare) value
+        PLIB_OC_PulseWidth16BitSet(APP_PWM_OC1_ID, pwmStop1);
+#ifdef APP_PWM_OC2_ID
+        // OC2 Init
+        // Set buffer(primary compare) value
+        PLIB_OC_Buffer16BitSet(APP_PWM_OC2_ID, pwmStart2);
+        // Set pulse width(secondary compare) value
+        PLIB_OC_PulseWidth16BitSet(APP_PWM_OC2_ID, pwmStop2);
+#endif // ifdef APP_PWM_OC2_ID
+#ifdef APP_PWM_OC3_ID
+        // OC3 Init
+        // Set buffer(primary compare) value
+        PLIB_OC_Buffer16BitSet(APP_PWM_OC3_ID, pwmStart3);
+        // Set pulse width(secondary compare) value
+        PLIB_OC_PulseWidth16BitSet(APP_PWM_OC3_ID, pwmStop3);
+#endif // ifdef APP_PWM_OC3_ID
+#ifdef APP_PWM_OC4_ID
+        // OC4 Init
+        // Set buffer(primary compare) value
+        PLIB_OC_Buffer16BitSet(APP_PWM_OC4_ID, pwmStart4);
+        // Set pulse width(secondary compare) value
+        PLIB_OC_PulseWidth16BitSet(APP_PWM_OC4_ID, pwmStop4);
+#endif // ifdef APP_PWM_OC4_ID
+        // Enable OC 1
+        PLIB_OC_Enable(APP_PWM_OC1_ID);
+#ifdef APP_PWM_OC2_ID
+        // Enable OC 2
+        PLIB_OC_Enable(APP_PWM_OC2_ID);
+#endif // ifdef APP_PWM_OC2_ID
+#ifdef APP_PWM_OC3_ID
+        // Enable OC 3
+        PLIB_OC_Enable(APP_PWM_OC3_ID);
+#endif // ifdef APP_PWM_OC3_ID
+#ifdef APP_PWM_OC4_ID
+        // Enable OC 4
+        PLIB_OC_Enable(APP_PWM_OC4_ID);
+#endif // ifdef APP_PWM_OC4_ID
+        // Start the timer
+        PLIB_TMR_Start(APP_PWM_TMR_ID);
+    } else {
+        // continuos update
+        PWM_Cycle = pwmCycle;
+        PWM_Start1 = pwmStart1;
+        PWM_Stop1 = pwmStop1;
+        PWM_Start2 = pwmStart2;
+        PWM_Stop2 = pwmStop2;
+        PWM_Start3 = pwmStart3;
+        PWM_Stop3 = pwmStop3;
+        PWM_Start4 = pwmStart4;
+        PWM_Stop4 = pwmStop4;
+    } 
 }
-
-#else // ifdef APP_PWM_OC2_ID
-void PWM_SetValues(
-    TMR_PRESCALE pwmPreScale
-,   int pwmWidth
-,   int pwmStart1
-,   int pwmStop1
-) {
-    // Stop the timer
-    PLIB_TMR_Stop(APP_PWM_TMR_ID);
-    // Disable OC's
-    PLIB_OC_Disable(APP_PWM_OC1_ID);
-    // Set the prescaler, and set the clock source as internal
-    PLIB_TMR_PrescaleSelect(APP_PWM_TMR_ID, pwmPreScale);
-    // Clear the timer
-    PLIB_TMR_Counter16BitClear(APP_PWM_TMR_ID);
-    // Load the period register
-    PLIB_TMR_Period16BitSet(APP_PWM_TMR_ID, pwmWidth);
-    // OC1 Init
-    // Set buffer(primary compare) value
-    PLIB_OC_Buffer16BitSet(APP_PWM_OC1_ID, pwmStart1);
-    // Set pulse width(secondary compare) value
-    PLIB_OC_PulseWidth16BitSet(APP_PWM_OC1_ID, pwmStop1);
-    // Enable OC 1
-    PLIB_OC_Enable(APP_PWM_OC1_ID);
-    // Start the timer
-    PLIB_TMR_Start(APP_PWM_TMR_ID);
-}
-
-#endif // else APP_PWM_OC2_ID
-
 
 #endif //ifdef APP_PWM_OC1_ID

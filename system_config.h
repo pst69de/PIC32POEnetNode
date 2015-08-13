@@ -272,6 +272,8 @@ extern "C" {
 #define APP_PWM_TMR_PRESCALE      TMR_PRESCALE_VALUE_8
 #define APP_PWM_TMR_PSFactor      8
 #define APP_PWM_TMR_INIT          0xEA60 // 50Hz
+#define APP_PWM_TMR_INT_VECTOR    INT_VECTOR_T2
+#define APP_PWM_TMR_INT_SOURCE    INT_SOURCE_TIMER_2
 // OC1 via PPS @ RPB4
 #define APP_PWM_OC1_ID            OC_ID_1
 #define APP_PWM_OC1_PORTS_ID      PORTS_ID_0
@@ -293,9 +295,24 @@ extern "C" {
 #define APP_PWM_OC2_Mode
 #define APP_PWM_OC2_Function      OUTPUT_FUNC_OC4
 #define APP_PWM_OC2_PPSOut        OUTPUT_PIN_RPA4
-// initial on / off values 5% (Pi/2 Phase)
-#define APP_PWM_OC2_On            0x7531
-#define APP_PWM_OC2_Off           0x80E9
+// initial on / off values 5% (Pi/3 Phase)
+#define APP_PWM_OC2_On            0x4D59
+#define APP_PWM_OC2_Off           0x5911
+// OC3 via PPS @ RPA3
+#define APP_PWM_OC3_ID            OC_ID_3
+#define APP_PWM_OC3_PORTS_ID      PORTS_ID_0
+#define APP_PWM_OC3_PORT_CHANNEL  PORT_CHANNEL_A
+#define APP_PWM_OC3_PIN           PORTS_BIT_POS_3
+// not an analog pin
+#define APP_PWM_OC3_Mode
+#define APP_PWM_OC3_Function      OUTPUT_FUNC_OC3
+#define APP_PWM_OC3_PPSOut        OUTPUT_PIN_RPA3
+// initial on / off values 5% (2Pi/3 Phase)
+#define APP_PWM_OC3_On            0x9AB1
+#define APP_PWM_OC3_Off           0xA669
+// OC5 via PPS @ RPA2
+#undef APP_PWM_OC4_ID
+// not yet 4 phase
 #endif // ifdef APP_USE_PWM
 
 #ifdef	__cplusplus

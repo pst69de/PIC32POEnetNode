@@ -108,6 +108,15 @@ extern "C" {
 // ***********************************************
 // priority in interrupts (7)6 = high 0 = low  
 // ***********************************************
+#ifdef APP_USE_PWM 
+#if APP_PWM_TMR_ID == TMR_ID_2
+void __ISR( _TIMER_2_VECTOR, ipl5soft ) _InterruptHandler_PWM(void) {
+    PWM_Handle_ISR();
+    PLIB_INT_SourceFlagClear(APP_INT_ID, APP_PWM_TMR_INT_SOURCE);
+}
+#endif //if APP_PWM_TMR_ID == TMR_ID_2
+#endif //ifdef APP_USE_PWM
+
 #ifdef APP_LCD_I2C_ID
 #if APP_LCD_I2C_ID == I2C_ID_1
 // Vector for I2C 1, priority 4, software controlled register switching (on MX1xx/MX2xx MCUs)
