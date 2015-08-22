@@ -39,6 +39,8 @@ void PWM_SetValues(
 ,   int pwmStop2
 ,   int pwmStart3
 ,   int pwmStop3
+,   int pwmStart4
+,   int pwmStop4
 );
 
 #endif // ifdef APP_PWM_OC1_ID

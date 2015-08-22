@@ -46,7 +46,7 @@ const char POEnet_width2[] = "width2";
 const char POEnet_phase2[] = "phase2";
 const char POEnet_width3[] = "width3";
 const char POEnet_phase3[] = "phase3";
-const char POEnet_width3[] = "width4";
+const char POEnet_width4[] = "width4";
 const char POEnet_text[] = "text";
 const char POEnet_action[] = "action";
 int  *node_id;

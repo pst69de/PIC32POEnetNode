@@ -142,7 +142,7 @@ void APP_Initialize ( void )
     }
 #endif // ifdef APP_USE_DIO
 #ifdef APP_USE_PWM
-    appData.PWM_Frequency = 50.0f;
+    appData.PWM_Frequency = 20.0f;
     appData.PWM_Phase     = 33.0f;
     appData.PWM_Width     = 5.0f;
     appData.PWM_Width2    = 5.0f;
@@ -323,16 +323,22 @@ bool APP_CheckTimer (void) {
 // UART routines 
 // INT Handling Read
 void APP_UART_Read(void) {
+#ifdef APP_UART_DEBUG
     APP_LCD_PrintChar(0,10,'*');
+#endif //ifdef APP_UART_DEBUG
     while (PLIB_USART_ReceiverDataIsAvailable(APP_UART_RX_ID)) {
         uint8_t readByte = PLIB_USART_ReceiverByteReceive(APP_UART_RX_ID);
         appData.UART_INPUT_BUF[appData.UART_INPUT_IDX++] = readByte;
+#ifdef APP_UART_DEBUG
         // APP_LCD_PrintChar(0,10,'R');
         APP_LCD_WriteSize(0,11,appData.UART_INPUT_IDX);
+#endif //ifdef APP_UART_DEBUG
         // POE.net: LF/zero is sent for termination
         if (!readByte | (readByte == 10)) {
             appData.UART_INPUT_SIZE = appData.UART_INPUT_IDX;
+#ifdef APP_UART_DEBUG
             APP_LCD_PrintChar(0,10,'R');
+#endif //ifdef APP_UART_DEBUG
         }
     }
 }
@@ -341,18 +347,26 @@ void APP_UART_Read(void) {
 void APP_UART_Write(void) {
     if (appData.UART_OUTPUT_IDX == appData.UART_OUTPUT_SIZE) {
         PLIB_USART_TransmitterDisable(APP_UART_TX_ID);
+#ifdef APP_UART_DEBUG
         APP_LCD_PrintChar(0,15,'T');
+#endif //ifdef APP_UART_DEBUG
         // after disabling the transmitter the interrupt will call a second time,
         // nulling the transmitted bytes :(
+#ifdef APP_UART_DEBUG
         if (appData.UART_OUTPUT_IDX > 0) { APP_LCD_WriteSize(0,16,appData.UART_OUTPUT_IDX); }
+#endif //ifdef APP_UART_DEBUG
         appData.UART_OUTPUT_SIZE = 0;
         appData.UART_OUTPUT_IDX = 0;
     }
     if (appData.UART_OUTPUT_SIZE > 0) {
+#ifdef APP_UART_DEBUG
         APP_LCD_PrintChar(0,15,'*');
+#endif //ifdef APP_UART_DEBUG
         if (!PLIB_USART_TransmitterBufferIsFull(APP_UART_TX_ID) & (appData.UART_OUTPUT_IDX < appData.UART_OUTPUT_SIZE)) {
             PLIB_USART_TransmitterByteSend(APP_UART_TX_ID, appData.UART_OUTPUT_BUF[ appData.UART_OUTPUT_IDX++]);
+#ifdef APP_UART_DEBUG
             APP_LCD_WriteSize(0,16,appData.UART_OUTPUT_IDX);
+#endif //ifdef APP_UART_DEBUG
         }
     }
 }
@@ -425,7 +439,17 @@ void APP_Tasks ( void )
 #endif
 #endif // ifdef APP_USE_DIO
 #ifdef APP_USE_PWM
-            POEnet_AddPWM(1, &appData.PWM_Frequency, &appData.PWM_Phase, &appData.PWM_Width, &appData.PWM_Width2);
+            POEnet_AddPWM(
+                    1
+                    , &appData.PWM_Frequency
+                    , &appData.PWM_Phase
+                    , &appData.PWM_Width
+                    , &appData.PWM_Width2
+                    , &appData.PWM_Phase2
+                    , &appData.PWM_Width3
+                    , &appData.PWM_Phase3
+                    , &appData.PWM_Width4
+                    );
 #endif // ifdef APP_USE_PWM
 #ifdef APP_USE_UART
             // init UART before USB
@@ -441,15 +465,8 @@ void APP_Tasks ( void )
                     //LEDG_Clear;
                     // -> use of sprintf for string formatting
                     // Time and Status representation
-                    // USB Status:
-                    // U (LCD_Line[0][10])      = USB_DEVICE_Open successfull
-                    // S (LCD_Line[0][11])      = USB_DEVICE_CDC_EventHandlerSet
-                    // B (LCD_Line[0][12])      = Device attached (Vbus is powered)
-                    // # (LCD_Line[0][13])      = > = Received; < = Sending
-                    // 000 (LCD_Line[0][14-16]) = count Bytes 
-                    // RT (LCD_Line[0][18-19])  = R = UART Receiver (* if receiving); T = UART Transmitter (* if transmitting) 
                     // POE.net status representation
-                    APP_LCD_Print( 0, 0, " __:__:__ R000 T000 ");
+                    APP_LCD_Print( 0, 0, " __:__:__ debugout..");
                     APP_LCD_PrintChar(0,2,numChar[appData.time.Hours % 10]);
                     APP_LCD_PrintChar(0,1,numChar[appData.time.Hours / 10]);
                     APP_LCD_PrintChar(0,5,numChar[appData.time.Minutes % 10]);
@@ -507,7 +524,9 @@ void APP_Tasks ( void )
         // POE.net input phase
         case APP_STATE_POENET_INPUT:
             if (APP_CheckTimer()) { break; }
+#ifdef APP_UART_DEBUG
             APP_LCD_PrintChar(0,14,'*');
+#endif //ifdef APP_UART_DEBUG
 #ifdef APP_USE_UART
             // UART may be Secondary, so pass Input as compiled
             // only if there is no USB processing needed
@@ -530,7 +549,9 @@ void APP_Tasks ( void )
         // POE.net input buffer filled
         case APP_STATE_POENET_INPUT_READY:
             if (APP_CheckTimer()) { break; }
+#ifdef APP_UART_DEBUG
             APP_LCD_PrintChar(0,14,'#');
+#endif //ifdef APP_UART_DEBUG
             switch (appData.POEnetPrimInputBuf[0]) {
                 case 'U':
                     //POE.net Message -> pass to interpreter
@@ -711,72 +732,78 @@ void APP_Tasks ( void )
                 // set PWM if needed
                 newPWM = false;
                 // POETODO: if 65535 > cycle > 400 keep PreScale
-                // Calculation of PreScale frequency * maxwidth must be greater than prescaled timer clock
-                if (65535 > (APP_PBCLK_FREQ / appData.PWM_Frequency)) {
-                    // TMR_PRESCALE_VALUE_1 = 0x00,
-                    if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_1) { 
-                        newPWM = true;
-                        appData.PWM_PreScale = TMR_PRESCALE_VALUE_1;
-                        appData.PWM_PSFactor = 1;
+                m = (int)(APP_PBCLK_FREQ / (appData.PWM_PSFactor * appData.PWM_Frequency));
+                if ((65535 < m) | (400 > m)){
+                    // Calculation of PreScale frequency * maxwidth must be greater than prescaled timer clock
+                    if (65535 > (APP_PBCLK_FREQ / appData.PWM_Frequency)) {
+                        // TMR_PRESCALE_VALUE_1 = 0x00,
+                        if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_1) { 
+                            newPWM = true;
+                            appData.PWM_PreScale = TMR_PRESCALE_VALUE_1;
+                            appData.PWM_PSFactor = 1;
+                        }
                     }
-                }
-                else if (65535 > (APP_PBCLK_FREQ / (2 * appData.PWM_Frequency))) {
-                    // TMR_PRESCALE_VALUE_2 = 0x01,
-                    if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_2) { 
-                        newPWM = true;
-                        appData.PWM_PreScale = TMR_PRESCALE_VALUE_2;
-                        appData.PWM_PSFactor = 2;
+                    else if (65535 > (APP_PBCLK_FREQ / (2 * appData.PWM_Frequency))) {
+                        // TMR_PRESCALE_VALUE_2 = 0x01,
+                        if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_2) { 
+                            newPWM = true;
+                            appData.PWM_PreScale = TMR_PRESCALE_VALUE_2;
+                            appData.PWM_PSFactor = 2;
+                        }
                     }
-                }
-                else if (65535 > (APP_PBCLK_FREQ / (4 * appData.PWM_Frequency))) {
-                    // TMR_PRESCALE_VALUE_4 = 0x02,
-                    if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_4) { 
-                        newPWM = true;
-                        appData.PWM_PreScale = TMR_PRESCALE_VALUE_4;
-                        appData.PWM_PSFactor = 4;
+                    else if (65535 > (APP_PBCLK_FREQ / (4 * appData.PWM_Frequency))) {
+                        // TMR_PRESCALE_VALUE_4 = 0x02,
+                        if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_4) { 
+                            newPWM = true;
+                            appData.PWM_PreScale = TMR_PRESCALE_VALUE_4;
+                            appData.PWM_PSFactor = 4;
+                        }
                     }
-                }
-                else if (65535 > (APP_PBCLK_FREQ / (8 * appData.PWM_Frequency))) {
-                    // TMR_PRESCALE_VALUE_8 = 0x03,
-                    if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_8) { 
-                        newPWM = true;
-                        appData.PWM_PreScale = TMR_PRESCALE_VALUE_8;
-                        appData.PWM_PSFactor = 8;
+                    else if (65535 > (APP_PBCLK_FREQ / (8 * appData.PWM_Frequency))) {
+                        // TMR_PRESCALE_VALUE_8 = 0x03,
+                        if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_8) { 
+                            newPWM = true;
+                            appData.PWM_PreScale = TMR_PRESCALE_VALUE_8;
+                            appData.PWM_PSFactor = 8;
+                        }
                     }
-                }
-                else if (65535 > (APP_PBCLK_FREQ / (16 * appData.PWM_Frequency))) {
-                    // TMR_PRESCALE_VALUE_16 = 0x04,
-                    if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_16) { 
-                        newPWM = true;
-                        appData.PWM_PreScale = TMR_PRESCALE_VALUE_16;
-                        appData.PWM_PSFactor = 16;
+                    else if (65535 > (APP_PBCLK_FREQ / (16 * appData.PWM_Frequency))) {
+                        // TMR_PRESCALE_VALUE_16 = 0x04,
+                        if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_16) { 
+                            newPWM = true;
+                            appData.PWM_PreScale = TMR_PRESCALE_VALUE_16;
+                            appData.PWM_PSFactor = 16;
+                        }
                     }
-                }
-                else if (65535 > (APP_PBCLK_FREQ / (32 * appData.PWM_Frequency))) {
-                    // TMR_PRESCALE_VALUE_32 = 0x05,
-                    if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_32) { 
-                        newPWM = true;
-                        appData.PWM_PreScale = TMR_PRESCALE_VALUE_32;
-                        appData.PWM_PSFactor = 32;
+                    else if (65535 > (APP_PBCLK_FREQ / (32 * appData.PWM_Frequency))) {
+                        // TMR_PRESCALE_VALUE_32 = 0x05,
+                        if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_32) { 
+                            newPWM = true;
+                            appData.PWM_PreScale = TMR_PRESCALE_VALUE_32;
+                            appData.PWM_PSFactor = 32;
+                        }
                     }
-                }
-                else if (65535 > (APP_PBCLK_FREQ / (64 * appData.PWM_Frequency))) {
-                    // TMR_PRESCALE_VALUE_64 = 0x06,
-                    if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_64) { 
-                        newPWM = true;
-                        appData.PWM_PreScale = TMR_PRESCALE_VALUE_64;
-                        appData.PWM_PSFactor = 64;
+                    else if (65535 > (APP_PBCLK_FREQ / (64 * appData.PWM_Frequency))) {
+                        // TMR_PRESCALE_VALUE_64 = 0x06,
+                        if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_64) { 
+                            newPWM = true;
+                            appData.PWM_PreScale = TMR_PRESCALE_VALUE_64;
+                            appData.PWM_PSFactor = 64;
+                        }
                     }
-                }
-                else {
-                    // TMR_PRESCALE_VALUE_256 = 0x07 (lowest)
-                    // at least 2Hz
-                    if (appData.PWM_Frequency < 2.0f) {appData.PWM_Frequency = 2.0f;}
-                    if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_256) { 
-                        newPWM = true;
-                        appData.PWM_PreScale = TMR_PRESCALE_VALUE_256;
-                        appData.PWM_PSFactor = 256;
+                    else {
+                        // TMR_PRESCALE_VALUE_256 = 0x07 (lowest)
+                        // at least 2Hz
+                        if (appData.PWM_Frequency < 2.0f) {appData.PWM_Frequency = 2.0f;}
+                        if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_256) { 
+                            newPWM = true;
+                            appData.PWM_PreScale = TMR_PRESCALE_VALUE_256;
+                            appData.PWM_PSFactor = 256;
+                        }
                     }
+#ifdef APP_PWM_DEBUG
+                    APP_LCD_WriteSize(0,11,appData.PWM_PSFactor);
+#endif //ifdef APP_PWM_DEBUG
                 }
                 // Calculation of Timer Width
                 m = (int)(APP_PBCLK_FREQ / (appData.PWM_PSFactor * appData.PWM_Frequency));

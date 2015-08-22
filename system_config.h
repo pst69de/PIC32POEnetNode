@@ -207,6 +207,8 @@ extern "C" {
 #define APP_UART_TX_HAND          APP_UART_RX_HAND // no flow control
 // general TX config
 #define APP_UART_TX_BUFFER_SIZE   APP_BUFFER_SIZE
+//#define APP_UART_DEBUG
+#undef  APP_UART_DEBUG
 #endif // of ifdef APP_USE_UART
 
 #ifdef APP_USE_ADC
@@ -269,9 +271,9 @@ extern "C" {
 #ifdef APP_USE_PWM
 // programming with single timer 1st
 #define APP_PWM_TMR_ID            TMR_ID_2
-#define APP_PWM_TMR_PRESCALE      TMR_PRESCALE_VALUE_8
-#define APP_PWM_TMR_PSFactor      8
-#define APP_PWM_TMR_INIT          0xEA60 // 50Hz
+#define APP_PWM_TMR_PRESCALE      TMR_PRESCALE_VALUE_32
+#define APP_PWM_TMR_PSFactor      32
+#define APP_PWM_TMR_INIT          0x927C // 20Hz
 #define APP_PWM_TMR_INT_VECTOR    INT_VECTOR_T2
 #define APP_PWM_TMR_INT_SOURCE    INT_SOURCE_TIMER_2
 // OC1 via PPS @ RPB4
@@ -285,7 +287,7 @@ extern "C" {
 #define APP_PWM_OC1_PPSOut        OUTPUT_PIN_RPB4
 // initial on / off values 5% (0 Phase)
 #define APP_PWM_OC1_On            0x0001
-#define APP_PWM_OC1_Off           0x0BB9
+#define APP_PWM_OC1_Off           0x0754
 // OC4 via PPS @ RPA4
 #define APP_PWM_OC2_ID            OC_ID_4
 #define APP_PWM_OC2_PORTS_ID      PORTS_ID_0
@@ -296,8 +298,8 @@ extern "C" {
 #define APP_PWM_OC2_Function      OUTPUT_FUNC_OC4
 #define APP_PWM_OC2_PPSOut        OUTPUT_PIN_RPA4
 // initial on / off values 5% (Pi/3 Phase)
-#define APP_PWM_OC2_On            0x4D59
-#define APP_PWM_OC2_Off           0x5911
+#define APP_PWM_OC2_On            0x3057
+#define APP_PWM_OC2_Off           0x37AB
 // OC3 via PPS @ RPA3
 #define APP_PWM_OC3_ID            OC_ID_3
 #define APP_PWM_OC3_PORTS_ID      PORTS_ID_0
@@ -308,11 +310,13 @@ extern "C" {
 #define APP_PWM_OC3_Function      OUTPUT_FUNC_OC3
 #define APP_PWM_OC3_PPSOut        OUTPUT_PIN_RPA3
 // initial on / off values 5% (2Pi/3 Phase)
-#define APP_PWM_OC3_On            0x9AB1
-#define APP_PWM_OC3_Off           0xA669
+#define APP_PWM_OC3_On            0x6225
+#define APP_PWM_OC3_Off           0x6979
 // OC5 via PPS @ RPA2
 #undef APP_PWM_OC4_ID
 // not yet 4 phase
+#define APP_PWM_DEBUG
+//#undef  APP_PWM_DEBUG
 #endif // ifdef APP_USE_PWM
 
 #ifdef	__cplusplus

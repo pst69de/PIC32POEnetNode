@@ -32,6 +32,9 @@
 #ifdef APP_USE_DIO
 #include "POEdio.h"
 #endif
+#ifdef APP_USE_PWM
+#include "POEpwm.h"
+#endif
 
 /* All the files in the C++ standard library declare its entities
  * within the std namespace. */
