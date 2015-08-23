@@ -111,13 +111,21 @@ extern "C" {
 // ***********************************************
 // priority in interrupts (7)6 = high 0 = low  
 // ***********************************************
-#ifdef APP_USE_PWM 
+#ifdef APP_USE_PWM
 #if APP_PWM_TMR_ID == TMR_ID_2
 void __ISR( _TIMER_2_VECTOR, ipl5soft ) _InterruptHandler_PWM(void) {
     PWM_Handle_ISR();
     PLIB_INT_SourceFlagClear(APP_INT_ID, APP_PWM_TMR_INT_SOURCE);
 }
 #endif //if APP_PWM_TMR_ID == TMR_ID_2
+#ifdef APP_USE_PWM2
+#if APP_PWM2_TMR_ID == TMR_ID_3
+void __ISR( _TIMER_3_VECTOR, ipl5soft ) _InterruptHandler_PWM2(void) {
+    PWM2_Handle_ISR();
+    PLIB_INT_SourceFlagClear(APP_INT_ID, APP_PWM2_TMR_INT_SOURCE);
+}
+#endif //if APP_PWM2_TMR_ID == TMR_ID_3
+#endif //ifdef APP_USE_PWM2
 #endif //ifdef APP_USE_PWM
 
 #ifdef APP_LCD_I2C_ID

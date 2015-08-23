@@ -129,9 +129,14 @@ void INT_Initialize(void) {
     PLIB_INT_VectorSubPrioritySet(APP_INT_ID, INT_VECTOR_UART1, INT_SUBPRIORITY_LEVEL0);
 #endif // of ifdef APP_USE_UART
 #ifdef APP_USE_PWM
-    // set priority and enable UART RX
+    // set priority and enable PWM ISR Handler
     PLIB_INT_VectorPrioritySet(APP_INT_ID, APP_PWM_TMR_INT_VECTOR, INT_PRIORITY_LEVEL5);
-    PLIB_INT_VectorSubPrioritySet(APP_INT_ID, APP_PWM_TMR_INT_VECTOR, INT_SUBPRIORITY_LEVEL0);
+    PLIB_INT_VectorSubPrioritySet(APP_INT_ID, APP_PWM_TMR_INT_VECTOR, INT_SUBPRIORITY_LEVEL1);
+#ifdef APP_USE_PWM2
+    // set priority and enable PWM2 ISR Handler
+    PLIB_INT_VectorPrioritySet(APP_INT_ID, APP_PWM2_TMR_INT_VECTOR, INT_PRIORITY_LEVEL5);
+    PLIB_INT_VectorSubPrioritySet(APP_INT_ID, APP_PWM2_TMR_INT_VECTOR, INT_SUBPRIORITY_LEVEL0);
+#endif // ifdef APP_USE_PWM2
 #endif // ifdef APP_USE_PWM
     // Enable the global interrupts
     PLIB_INT_Enable(APP_INT_ID);
@@ -149,6 +154,9 @@ void INT_Initialize(void) {
 #endif
 #ifdef APP_USE_PWM
     PLIB_INT_SourceEnable(APP_INT_ID, APP_PWM_TMR_INT_SOURCE);
+#ifdef APP_USE_PWM2
+    PLIB_INT_SourceEnable(APP_INT_ID, APP_PWM2_TMR_INT_SOURCE);
+#endif // ifdef APP_USE_PWM2
 #endif // ifdef APP_USE_PWM
 }
 

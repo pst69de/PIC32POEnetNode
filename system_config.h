@@ -17,6 +17,7 @@ extern "C" {
 #define APP_USE_ADC
 #define APP_USE_DIO
 #define APP_USE_PWM
+#define APP_USE_PWM2
 
 // imports:
 #include "peripheral/ports/plib_ports.h"
@@ -276,6 +277,7 @@ extern "C" {
 #define APP_PWM_TMR_INIT          0x927C // 20Hz
 #define APP_PWM_TMR_INT_VECTOR    INT_VECTOR_T2
 #define APP_PWM_TMR_INT_SOURCE    INT_SOURCE_TIMER_2
+#define APP_PWM_OC_TMR_BASE       OC_TIMER_16BIT_TMR2
 // OC1 via PPS @ RPB4
 #define APP_PWM_OC1_ID            OC_ID_1
 #define APP_PWM_OC1_PORTS_ID      PORTS_ID_0
@@ -312,9 +314,48 @@ extern "C" {
 // initial on / off values 5% (2Pi/3 Phase)
 #define APP_PWM_OC3_On            0x6225
 #define APP_PWM_OC3_Off           0x6979
-// OC5 via PPS @ RPA2
+// OCx via PPS @ RPxy
+// no 4th phase, used for PWM2
 #undef APP_PWM_OC4_ID
-// not yet 4 phase
+#undef APP_PWM_OC4_PORTS_ID
+#undef APP_PWM_OC4_PORT_CHANNEL
+#undef APP_PWM_OC4_PIN
+#undef APP_PWM_OC4_Mode
+#undef APP_PWM_OC4_Function
+#undef APP_PWM_OC4_PPSOut
+#undef APP_PWM_OC4_On
+#undef APP_PWM_OC4_Off
+#ifdef APP_USE_PWM2
+// programming with single timer 1st
+#define APP_PWM2_TMR_ID            TMR_ID_3
+#define APP_PWM2_TMR_PRESCALE      TMR_PRESCALE_VALUE_1
+#define APP_PWM2_TMR_PSFactor      1
+#define APP_PWM2_TMR_INIT          0x0960 // 10kHz
+#define APP_PWM2_TMR_INT_VECTOR    INT_VECTOR_T3
+#define APP_PWM2_TMR_INT_SOURCE    INT_SOURCE_TIMER_3
+#define APP_PWM2_OC_TMR_BASE       OC_TIMER_16BIT_TMR3
+// OC5 via PPS @ RPA2
+#define APP_PWM2_OC1_ID            OC_ID_5
+#define APP_PWM2_OC1_PORTS_ID      PORTS_ID_0
+#define APP_PWM2_OC1_PORT_CHANNEL  PORT_CHANNEL_A
+#define APP_PWM2_OC1_PIN           PORTS_BIT_POS_2
+#define APP_PWM2_OC1_Mode
+#define APP_PWM2_OC1_Function      OUTPUT_FUNC_OC5
+#define APP_PWM2_OC1_PPSOut        OUTPUT_PIN_RPA2
+// initial on / off values 50% (0% Phase)
+#define APP_PWM2_OC1_On            0x0001
+#define APP_PWM2_OC1_Off           0x04B1
+// OCx via PPS @ RPxy (you can share up to 5 OCs, 3+2 is maxing this out)
+#undef APP_PWM2_OC2_ID
+#undef APP_PWM2_OC2_PORTS_ID
+#undef APP_PWM2_OC2_PORT_CHANNEL
+#undef APP_PWM2_OC2_PIN
+#undef APP_PWM2_OC2_Mode
+#undef APP_PWM2_OC2_Function
+#undef APP_PWM2_OC2_PPSOut
+#undef APP_PWM2_OC2_On
+#undef APP_PWM2_OC2_Off
+#endif // ifdef APP_USE_PWM2
 #define APP_PWM_DEBUG
 //#undef  APP_PWM_DEBUG
 #endif // ifdef APP_USE_PWM

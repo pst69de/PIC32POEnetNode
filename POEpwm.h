@@ -43,6 +43,20 @@ void PWM_SetValues(
 ,   int pwmStop4
 );
 
+#ifdef APP_PWM2_OC1_ID
+
+void PWM2_Handle_ISR(void);
+
+void PWM2_SetValues(
+    TMR_PRESCALE pwmPreScale
+,   int pwmCycle
+,   int pwmStart1
+,   int pwmStop1
+,   int pwmStart2
+,   int pwmStop2
+);
+
+#endif // ifdef APP_PWM2_OC1_ID
 #endif // ifdef APP_PWM_OC1_ID
 
 #ifdef	__cplusplus

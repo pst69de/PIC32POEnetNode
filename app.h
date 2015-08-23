@@ -141,24 +141,42 @@ typedef struct
     float             ADC_Value[APP_ADC_NUM_PINS];
     char              ADC_Unit[APP_ADC_NUM_PINS][APP_STRING_SIZE];
     char              ADC_Representation[APP_ADC_NUM_PINS][APP_STRING_SIZE];
+    int               ADC_outline[APP_ADC_NUM_PINS];
+    int               ADC_outpos[APP_ADC_NUM_PINS];
+    int               ADC_outwidth[APP_ADC_NUM_PINS];
 #endif // ifdef APP_USE_ADC
 #ifdef APP_USE_DIO
     int               DI_Value[APP_DI_COUNT];
     char              DI_LoValue[APP_DI_COUNT][APP_STRING_SIZE];
     char              DI_HiValue[APP_DI_COUNT][APP_STRING_SIZE];
+    int               DI_outline[APP_DI_COUNT];
+    int               DI_outpos[APP_DI_COUNT];
+    int               DI_outwidth[APP_DI_COUNT];
     int               DO_Value[APP_DO_COUNT];
     char              DO_LoValue[APP_DO_COUNT][APP_STRING_SIZE];
     char              DO_HiValue[APP_DO_COUNT][APP_STRING_SIZE];
+    int               DO_outline[APP_DO_COUNT];
+    int               DO_outpos[APP_DO_COUNT];
+    int               DO_outwidth[APP_DO_COUNT];
 #endif // ifdef APP_USE_DIO
 #ifdef APP_USE_PWM
     float             PWM_Frequency;
-    float             PWM_Phase;
     float             PWM_Width;
-    float             PWM_Phase2;
+    float             PWM_Phase;
     float             PWM_Width2;
-    float             PWM_Phase3;
+    float             PWM_Phase2;
     float             PWM_Width3;
+    float             PWM_Phase3;
     float             PWM_Width4;
+    int               PWM_Foutline;
+    int               PWM_Foutpos;
+    int               PWM_Foutwidth;
+    int               PWM_Woutline;
+    int               PWM_Woutpos;
+    int               PWM_Woutwidth;
+    int               PWM_Poutline;
+    int               PWM_Poutpos;
+    int               PWM_Poutwidth;
     TMR_PRESCALE      PWM_PreScale;
     int               PWM_PSFactor;
     int               PWM_Cycle;
@@ -170,6 +188,28 @@ typedef struct
     int               PWM_Stop3;
     int               PWM_Start4;
     int               PWM_Stop4;
+#ifdef APP_USE_PWM2
+    float             PWM2_Frequency;
+    float             PWM2_Width;
+    float             PWM2_Phase;
+    float             PWM2_Width2;
+    int               PWM2_Foutline;
+    int               PWM2_Foutpos;
+    int               PWM2_Foutwidth;
+    int               PWM2_Woutline;
+    int               PWM2_Woutpos;
+    int               PWM2_Woutwidth;
+    int               PWM2_Poutline;
+    int               PWM2_Poutpos;
+    int               PWM2_Poutwidth;
+    TMR_PRESCALE      PWM2_PreScale;
+    int               PWM2_PSFactor;
+    int               PWM2_Cycle;
+    int               PWM2_Start1;
+    int               PWM2_Stop1;
+    int               PWM2_Start2;
+    int               PWM2_Stop2;
+#endif // ifdef APP_USE_PWM2
 #endif // ifdef APP_USE_PWM
 } APP_DATA;
 

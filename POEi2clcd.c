@@ -261,15 +261,19 @@ void LCD_ClearLine( uint8_t line) {
 } 
 
 void LCD_PrintChar(uint8_t line, uint8_t pos, char lcdChar) {
-    LCD_Line[line][pos] = lcdChar;
+    if ((line < LCD_LINEBUFFERS) & (pos < LCD_LINEBUFFER_SIZE)) {
+        LCD_Line[line][pos] = lcdChar;
+    }
 }
 
 void LCD_Print(uint8_t line, uint8_t pos, const char* lcdString) {
     uint8_t i, len;
-    len = strlen(lcdString);
-    if (len + pos > LCD_LINEBUFFER_SIZE) { len = LCD_LINEBUFFER_SIZE - pos; }
-    for (i = 0; i < len; i++) {
-        LCD_PrintChar(line, pos+i, *(lcdString+i));
+    if (line < LCD_LINEBUFFERS) {
+        len = strlen(lcdString);
+        if (len + pos > LCD_LINEBUFFER_SIZE) { len = LCD_LINEBUFFER_SIZE - pos; }
+        for (i = 0; i < len; i++) {
+            LCD_PrintChar(line, pos+i, *(lcdString+i));
+        }
     }
 }
 
