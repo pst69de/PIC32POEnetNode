@@ -177,17 +177,9 @@ typedef struct
     int               PWM_Poutline;
     int               PWM_Poutpos;
     int               PWM_Poutwidth;
-    TMR_PRESCALE      PWM_PreScale;
-    int               PWM_PSFactor;
-    int               PWM_Cycle;
-    int               PWM_Start1;
-    int               PWM_Stop1;
-    int               PWM_Start2;
-    int               PWM_Stop2;
-    int               PWM_Start3;
-    int               PWM_Stop3;
-    int               PWM_Start4;
-    int               PWM_Stop4;
+    int               PWM_W2outline;
+    int               PWM_W2outpos;
+    int               PWM_W2outwidth;
 #ifdef APP_USE_PWM2
     float             PWM2_Frequency;
     float             PWM2_Width;
@@ -202,13 +194,9 @@ typedef struct
     int               PWM2_Poutline;
     int               PWM2_Poutpos;
     int               PWM2_Poutwidth;
-    TMR_PRESCALE      PWM2_PreScale;
-    int               PWM2_PSFactor;
-    int               PWM2_Cycle;
-    int               PWM2_Start1;
-    int               PWM2_Stop1;
-    int               PWM2_Start2;
-    int               PWM2_Stop2;
+    int               PWM2_W2outline;
+    int               PWM2_W2outpos;
+    int               PWM2_W2outwidth;
 #endif // ifdef APP_USE_PWM2
 #endif // ifdef APP_USE_PWM
 } APP_DATA;

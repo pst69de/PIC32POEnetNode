@@ -490,9 +490,10 @@ void POEnet_SetPWM(tinyxml2::XMLElement *elePWM) {
                 if (anElement->QueryFloatText(&newValue) == tinyxml2::XML_SUCCESS) {
                     // Only if resolvable value, width sets Width and 2,3,4 (if used)
                     myPWM->SetAttribute( &POEnet_width[0], newValue);
-                    if (myPWM->FindAttribute(&POEnet_width2[0]) != 0) { myPWM->SetAttribute( &POEnet_width2[0], newValue); }
-                    if (myPWM->FindAttribute(&POEnet_width3[0]) != 0) { myPWM->SetAttribute( &POEnet_width3[0], newValue); }
-                    if (myPWM->FindAttribute(&POEnet_width4[0]) != 0) { myPWM->SetAttribute( &POEnet_width4[0], newValue); }
+                    // POETODO: only with a set flag (yet to define)
+                    //if (myPWM->FindAttribute(&POEnet_width2[0]) != 0) { myPWM->SetAttribute( &POEnet_width2[0], newValue); }
+                    //if (myPWM->FindAttribute(&POEnet_width3[0]) != 0) { myPWM->SetAttribute( &POEnet_width3[0], newValue); }
+                    //if (myPWM->FindAttribute(&POEnet_width4[0]) != 0) { myPWM->SetAttribute( &POEnet_width4[0], newValue); }
                 }
             }
             // Only set a value, if defined

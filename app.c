@@ -85,57 +85,81 @@ void APP_Initialize ( void )
     ClearString(&appData.POEnetXMLError[0]);
     // Double String Length so repeat 
     ClearString(&appData.POEnetXMLError[20]);    
-    appData.POEnet_NodeId = -1;
-    appData.pollValues = false;
-    appData.pollGranularity = 10;
+    appData.POEnet_NodeId   = -1;
+    appData.pollValues      = false;
+    appData.pollGranularity = APP_POLL_GRANULARITY;
 #ifdef APP_USE_ADC
-    appData.ADC_PinIdx = 1;
-    appData.ADC_PinValue[0] = 0;
+    appData.ADC_PinIdx         = 1;
+    appData.ADC_PinValue[0]    = 0;
     for (i = 0; i < APP_ADC_MEAN_BUFFER; i++) { appData.ADC_PinMean[0][i] = 0;}
-    appData.ADC_Numerator[0] = 102.4f;
+    appData.ADC_Numerator[0]   = 102.4f;
     appData.ADC_Denominator[0] = 1024.0f;
-    appData.ADC_Offset[0] = 0.0f;
-    appData.ADC_Value[0] = 0.0f;
+    appData.ADC_Offset[0]      = 0.0f;
+    appData.ADC_Value[0]       = 0.0f;
     strcpy(&appData.ADC_Unit[0][0], "Du");
-    appData.ADC_outline[0] = 0;
-    appData.ADC_outpos[0] = 0;
-    appData.ADC_outwidth[0] = 0; // no output
+    appData.ADC_outline[0]     = 0;
+    appData.ADC_outpos[0]      = 0;
+    appData.ADC_outwidth[0]    = 0; // no output
 #ifdef APP_ADC2_INPUT_POS
-    appData.ADC_PinValue[1] = 0;
+    appData.ADC_PinValue[1]    = 0;
     for (i = 0; i < APP_ADC_MEAN_BUFFER; i++) { appData.ADC_PinMean[1][i] = 0;}
-    appData.ADC_Numerator[1] = 102.4f;
+    appData.ADC_Numerator[1]   = 102.4f;
     appData.ADC_Denominator[1] = 1024.0f;
-    appData.ADC_Offset[1] = 0.0f;
-    appData.ADC_Value[1] = 0.0f;
+    appData.ADC_Offset[1]      = 0.0f;
+    appData.ADC_Value[1]       = 0.0f;
     strcpy(&appData.ADC_Unit[1][0], "Du");
-    appData.ADC_outline[1] = 0;
-    appData.ADC_outpos[1] = 0;
-    appData.ADC_outwidth[1] = 0; // no output
+    appData.ADC_outline[1]     = 0;
+    appData.ADC_outpos[1]      = 0;
+    appData.ADC_outwidth[1]    = 0; // no output
 #endif // ifdef APP_ADC2_INPUT_POS
 #ifdef APP_ADC3_INPUT_POS
-    appData.ADC_PinValue[2] = 0;
+    appData.ADC_PinValue[2]    = 0;
     for (i = 0; i < APP_ADC_MEAN_BUFFER; i++) { appData.ADC_PinMean[2][i] = 0;}
-    appData.ADC_Numerator[2] = 33.94f;
+    appData.ADC_Numerator[2]   = 33.94f;
     appData.ADC_Denominator[2] = 1024.0f;
-    appData.ADC_Offset[2] = 0.0f;
-    appData.ADC_Value[2] = 0.0f;
+    appData.ADC_Offset[2]      = 0.0f;
+    appData.ADC_Value[2]       = 0.0f;
     strcpy(&appData.ADC_Unit[2][0], "V");
-    appData.ADC_outline[2] = 0;
-    appData.ADC_outpos[2] = 0;
-    appData.ADC_outwidth[2] = 0; // no output
+    appData.ADC_outline[2]     = 0;
+    appData.ADC_outpos[2]      = 0;
+    appData.ADC_outwidth[2]    = 0; // no output
 #endif // ifdef APP_ADC3_INPUT_POS
 #ifdef APP_ADC4_INPUT_POS
-    appData.ADC_PinValue[3] = 0;
+    appData.ADC_PinValue[3]    = 0;
     for (i = 0; i < APP_ADC_MEAN_BUFFER; i++) { appData.ADC_PinMean[3][i] = 0;}
-    appData.ADC_Numerator[3] = -50.0f;
+    appData.ADC_Numerator[3]   = -50.0f;
     appData.ADC_Denominator[3] = 1024.0f;
-    appData.ADC_Offset[3] = 65.0f;
-    appData.ADC_Value[3] = 0.0f;
+    appData.ADC_Offset[3]      = 65.0f;
+    appData.ADC_Value[3]       = 0.0f;
     strcpy(&appData.ADC_Unit[3][0], "A");
-    appData.ADC_outline[3] = 0;
-    appData.ADC_outpos[3] = 0;
-    appData.ADC_outwidth[3] = 0; // no output
+    appData.ADC_outline[3]     = 0;
+    appData.ADC_outpos[3]      = 0;
+    appData.ADC_outwidth[3]    = 0; // no output
 #endif // ifdef APP_ADC4_INPUT_POS
+#ifdef APP_ADC5_INPUT_POS
+    appData.ADC_PinValue[4]    = 0;
+    for (i = 0; i < APP_ADC_MEAN_BUFFER; i++) { appData.ADC_PinMean[4][i] = 0;}
+    appData.ADC_Numerator[4]   = -50.0f;
+    appData.ADC_Denominator[4] = 1024.0f;
+    appData.ADC_Offset[4]      = 65.0f;
+    appData.ADC_Value[4]       = 0.0f;
+    strcpy(&appData.ADC_Unit[4][0], "A");
+    appData.ADC_outline[4]     = 0;
+    appData.ADC_outpos[4]      = 0;
+    appData.ADC_outwidth[4]    = 0; // no output
+#endif // ifdef APP_ADC5_INPUT_POS
+#ifdef APP_ADC6_INPUT_POS
+    appData.ADC_PinValue[5]    = 0;
+    for (i = 0; i < APP_ADC_MEAN_BUFFER; i++) { appData.ADC_PinMean[5][i] = 0;}
+    appData.ADC_Numerator[5]   = -50.0f;
+    appData.ADC_Denominator[5] = 1024.0f;
+    appData.ADC_Offset[5]      = 65.0f;
+    appData.ADC_Value[5]       = 0.0f;
+    strcpy(&appData.ADC_Unit[5][0], "A");
+    appData.ADC_outline[5]     = 0;
+    appData.ADC_outpos[5]      = 0;
+    appData.ADC_outwidth[5]    = 0; // no output
+#endif // ifdef APP_ADC6_INPUT_POS
 #endif // ifdef APP_USE_ADC
 #ifdef APP_USE_DIO
     for (i = 0; i < APP_DI_COUNT; i++) {
@@ -160,66 +184,31 @@ void APP_Initialize ( void )
     }
 #endif // ifdef APP_USE_DIO
 #ifdef APP_USE_PWM
-    appData.PWM_Frequency = 20.0f;
-    appData.PWM_Width     = 5.0f;
-    appData.PWM_Phase     = 33.0f;
-    appData.PWM_Width2    = 5.0f;
-    appData.PWM_Phase2    = 67.0f;
-    appData.PWM_Width3    = 5.0f;
-    appData.PWM_Phase3    = 0.0f;
-    appData.PWM_Width4    = 0.0f;
-    appData.PWM_PreScale  = APP_PWM_TMR_PRESCALE;
-    appData.PWM_PSFactor  = APP_PWM_TMR_PSFactor;
-    appData.PWM_Cycle     = APP_PWM_TMR_INIT;
-    appData.PWM_Start1    = APP_PWM_OC1_On;
-    appData.PWM_Stop1     = APP_PWM_OC1_Off;
-#ifdef APP_PWM_OC2_ID
-    appData.PWM_Start2    = APP_PWM_OC2_On;
-    appData.PWM_Stop2     = APP_PWM_OC2_Off;
-#else
-    appData.PWM_Start2    = 0;
-    appData.PWM_Stop2     = 0;
-#endif
-#ifdef APP_PWM_OC3_ID
-    appData.PWM_Start3    = APP_PWM_OC3_On;
-    appData.PWM_Stop3     = APP_PWM_OC3_Off;
-#else
-    appData.PWM_Start3    = 0;
-    appData.PWM_Stop3     = 0;
-#endif
-#ifdef APP_PWM_OC4_ID
-    appData.PWM_Start4    = APP_PWM_OC4_On;
-    appData.PWM_Stop4     = APP_PWM_OC4_Off;
-#else
-    appData.PWM_Start4    = 0;
-    appData.PWM_Stop4     = 0;
-#endif
-    appData.PWM_Foutline  = 2;
-    appData.PWM_Foutpos   = 0;
-    appData.PWM_Foutwidth = 9;
-    appData.PWM_Woutline  = 2;
-    appData.PWM_Woutpos   = 10;
-    appData.PWM_Woutwidth = 3;
-    appData.PWM_Poutline  = 2;
-    appData.PWM_Poutpos   = 14;
-    appData.PWM_Poutwidth = 3;
+    appData.PWM_Frequency  = 500.0f;
+    appData.PWM_Width      = 10.0f;
+    appData.PWM_Phase      = 0.0f;
+    appData.PWM_Width2     = 10.0f;
+    appData.PWM_Phase2     = 0.0f;
+    appData.PWM_Width3     = 0.0f;
+    appData.PWM_Phase3     = 0.0f;
+    appData.PWM_Width4     = 0.0f;
+    appData.PWM_Foutline   = 2;
+    appData.PWM_Foutpos    = 0;
+    appData.PWM_Foutwidth  = 9;
+    appData.PWM_Woutline   = 2;
+    appData.PWM_Woutpos    = 10;
+    appData.PWM_Woutwidth  = 3;
+    appData.PWM_Poutline   = 2;
+    appData.PWM_Poutpos    = 14;
+    appData.PWM_Poutwidth  = 3;
+    appData.PWM_W2outline  = 2;
+    appData.PWM_W2outpos   = 18;
+    appData.PWM_W2outwidth = 3;
 #ifdef APP_USE_PWM2
-    appData.PWM2_Frequency = 10000.0f;
-    appData.PWM2_Width     = 50.0f;
+    appData.PWM2_Frequency = 500.0f;
+    appData.PWM2_Width     = 10.0f;
     appData.PWM2_Phase     = 0.0f;
-    appData.PWM2_Width2    = 0.0f;
-    appData.PWM2_PreScale  = APP_PWM2_TMR_PRESCALE;
-    appData.PWM2_PSFactor  = APP_PWM2_TMR_PSFactor;
-    appData.PWM2_Cycle     = APP_PWM2_TMR_INIT;
-    appData.PWM2_Start1    = APP_PWM2_OC1_On;
-    appData.PWM2_Stop1     = APP_PWM2_OC1_Off;
-#ifdef APP_PWM2_OC2_ID
-    appData.PWM2_Start2    = APP_PWM2_OC2_On;
-    appData.PWM2_Stop2     = APP_PWM2_OC2_Off;
-#else
-    appData.PWM2_Start2    = 0;
-    appData.PWM2_Stop2     = 0;
-#endif
+    appData.PWM2_Width2    = 10.0f;
     appData.PWM2_Foutline  = 3;
     appData.PWM2_Foutpos   = 0;
     appData.PWM2_Foutwidth = 9;
@@ -228,7 +217,10 @@ void APP_Initialize ( void )
     appData.PWM2_Woutwidth = 3;
     appData.PWM2_Poutline  = 3;
     appData.PWM2_Poutpos   = 14;
-    appData.PWM2_Poutwidth = 0; // no output
+    appData.PWM2_Poutwidth = 3; // no output
+    appData.PWM2_W2outline = 3;
+    appData.PWM2_W2outpos  = 18;
+    appData.PWM2_W2outwidth= 3;
 #endif // ifdef APP_USE_PWM2
 #endif // ifdef APP_USE_PWM
     // Place the App state machine in its initial state.
@@ -282,7 +274,7 @@ void APP_LCD_WriteFrequency(int line, int pos, int width, float frequency) {
     if (width >= 1) {
         ClearString(&strFreq[0]);
         APP_LCD_ClearSpace(line,pos,width);
-        sprintf(&strFreq[0],"%5.1fHz", frequency);
+        sprintf(&strFreq[0],"%7.0fHz", frequency);
         APP_LCD_Print(line,pos,strFreq);
     }
 }
@@ -525,20 +517,20 @@ void APP_Tasks ( void )
 #endif
 #endif // ifdef APP_USE_DIO
 #ifdef APP_USE_PWM
-            POEnet_AddPWM3(
+            POEnet_AddPWM2(
                     1
                     , &appData.PWM_Frequency
                     , &appData.PWM_Width
                     , &appData.PWM_Phase
                     , &appData.PWM_Width2
-                    , &appData.PWM_Phase2
-                    , &appData.PWM_Width3
                     );
 #ifdef APP_USE_PWM2
-            POEnet_AddPWM(
+            POEnet_AddPWM2(
                     2
                     , &appData.PWM2_Frequency
                     , &appData.PWM2_Width
+                    , &appData.PWM_Phase
+                    , &appData.PWM_Width2
                     );
 #endif // ifdef APP_USE_PWM2
 #endif // ifdef APP_USE_PWM
@@ -568,11 +560,43 @@ void APP_Tasks ( void )
                     APP_LCD_Print( 1, 10, &appData.POEnetUID[0]);
                     APP_LCD_ClearLine(2);
                     APP_LCD_ClearLine(3);
-                    APP_LCD_WriteFrequency(appData.PWM_Foutline,appData.PWM_Foutpos,appData.PWM_Foutwidth,appData.PWM_Frequency);
-                    APP_LCD_WritePercent(appData.PWM_Woutline,appData.PWM_Woutpos,appData.PWM_Woutwidth,appData.PWM_Width);
-                    APP_LCD_WritePercent(appData.PWM_Poutline,appData.PWM_Poutpos,appData.PWM_Poutwidth,appData.PWM_Phase);
-                    APP_LCD_WriteFrequency(appData.PWM2_Foutline,appData.PWM2_Foutpos,appData.PWM2_Foutwidth,appData.PWM2_Frequency);
-                    APP_LCD_WritePercent(appData.PWM2_Woutline,appData.PWM2_Woutpos,appData.PWM2_Woutwidth,appData.PWM2_Width);
+#ifdef APP_USE_PWM
+                    // at least 2Hz
+                    if (appData.PWM_Frequency < 2.0f) {appData.PWM_Frequency = 2.0f;}
+                    if (PWM_Calculate(
+                                appData.PWM_Frequency
+                            ,   appData.PWM_Width
+                            ,   appData.PWM_Phase
+                            ,   appData.PWM_Width2
+                            ,   appData.PWM_Phase2
+                            ,   appData.PWM_Width3
+                            ,   appData.PWM_Phase3
+                            ,   appData.PWM_Width4
+                            )
+                       ) {
+                        // set up Display values
+                        APP_LCD_WriteFrequency(appData.PWM_Foutline,appData.PWM_Foutpos,appData.PWM_Foutwidth,appData.PWM_Frequency);
+                        APP_LCD_WritePercent(appData.PWM_Woutline,appData.PWM_Woutpos,appData.PWM_Woutwidth,appData.PWM_Width);
+                        APP_LCD_WritePercent(appData.PWM_Poutline,appData.PWM_Poutpos,appData.PWM_Poutwidth,appData.PWM_Phase);
+                        APP_LCD_WritePercent(appData.PWM_W2outline,appData.PWM_W2outpos,appData.PWM_W2outwidth,appData.PWM_Width2);
+                    }
+#ifdef APP_USE_PWM2
+                    if (appData.PWM2_Frequency < 2.0f) {appData.PWM2_Frequency = 2.0f;}
+                    if (PWM2_Calculate(
+                                appData.PWM2_Frequency
+                            ,   appData.PWM2_Width
+                            ,   appData.PWM2_Phase
+                            ,   appData.PWM2_Width2
+                            )
+                       ) {
+                        // set up Display values
+                        APP_LCD_WriteFrequency(appData.PWM2_Foutline,appData.PWM2_Foutpos,appData.PWM2_Foutwidth,appData.PWM2_Frequency);
+                        APP_LCD_WritePercent(appData.PWM2_Woutline,appData.PWM2_Woutpos,appData.PWM2_Woutwidth,appData.PWM2_Width);
+                        APP_LCD_WritePercent(appData.PWM2_Poutline,appData.PWM2_Poutpos,appData.PWM2_Poutwidth,appData.PWM2_Phase);
+                        APP_LCD_WritePercent(appData.PWM2_W2outline,appData.PWM2_W2outpos,appData.PWM2_W2outwidth,appData.PWM2_Width2);
+                    }
+#endif // ifdef APP_USE_PWM2
+#endif // ifdef APP_USE_PWM
                     appData.LCD_Return_AppState = appData.LCD_Init_Return;
                     appData.state = APP_LCD_UPDATE;
                 } else {
@@ -821,277 +845,39 @@ void APP_Tasks ( void )
 #endif // ifdef APP_DO_4
 #endif // ifdef APP_USE_DIO
 #ifdef APP_USE_PWM
-                // set PWM only if needed
-                newPWM = false;
-                m = (int)(APP_PBCLK_FREQ / (appData.PWM_PSFactor * appData.PWM_Frequency));
-                if ((65535 < m) | (400 > m)){
-                    // Calculation of PreScale frequency * maxwidth must be greater than prescaled timer clock
-                    if (65535 > (APP_PBCLK_FREQ / appData.PWM_Frequency)) {
-                        // TMR_PRESCALE_VALUE_1 = 0x00,
-                        if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_1) { 
-                            newPWM = true;
-                            appData.PWM_PreScale = TMR_PRESCALE_VALUE_1;
-                            appData.PWM_PSFactor = 1;
-                        }
-                    }
-                    else if (65535 > (APP_PBCLK_FREQ / (2 * appData.PWM_Frequency))) {
-                        // TMR_PRESCALE_VALUE_2 = 0x01,
-                        if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_2) { 
-                            newPWM = true;
-                            appData.PWM_PreScale = TMR_PRESCALE_VALUE_2;
-                            appData.PWM_PSFactor = 2;
-                        }
-                    }
-                    else if (65535 > (APP_PBCLK_FREQ / (4 * appData.PWM_Frequency))) {
-                        // TMR_PRESCALE_VALUE_4 = 0x02,
-                        if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_4) { 
-                            newPWM = true;
-                            appData.PWM_PreScale = TMR_PRESCALE_VALUE_4;
-                            appData.PWM_PSFactor = 4;
-                        }
-                    }
-                    else if (65535 > (APP_PBCLK_FREQ / (8 * appData.PWM_Frequency))) {
-                        // TMR_PRESCALE_VALUE_8 = 0x03,
-                        if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_8) { 
-                            newPWM = true;
-                            appData.PWM_PreScale = TMR_PRESCALE_VALUE_8;
-                            appData.PWM_PSFactor = 8;
-                        }
-                    }
-                    else if (65535 > (APP_PBCLK_FREQ / (16 * appData.PWM_Frequency))) {
-                        // TMR_PRESCALE_VALUE_16 = 0x04,
-                        if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_16) { 
-                            newPWM = true;
-                            appData.PWM_PreScale = TMR_PRESCALE_VALUE_16;
-                            appData.PWM_PSFactor = 16;
-                        }
-                    }
-                    else if (65535 > (APP_PBCLK_FREQ / (32 * appData.PWM_Frequency))) {
-                        // TMR_PRESCALE_VALUE_32 = 0x05,
-                        if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_32) { 
-                            newPWM = true;
-                            appData.PWM_PreScale = TMR_PRESCALE_VALUE_32;
-                            appData.PWM_PSFactor = 32;
-                        }
-                    }
-                    else if (65535 > (APP_PBCLK_FREQ / (64 * appData.PWM_Frequency))) {
-                        // TMR_PRESCALE_VALUE_64 = 0x06,
-                        if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_64) { 
-                            newPWM = true;
-                            appData.PWM_PreScale = TMR_PRESCALE_VALUE_64;
-                            appData.PWM_PSFactor = 64;
-                        }
-                    }
-                    else {
-                        // TMR_PRESCALE_VALUE_256 = 0x07 (lowest)
-                        // at least 2Hz
-                        if (appData.PWM_Frequency < 2.0f) {appData.PWM_Frequency = 2.0f;}
-                        if (appData.PWM_PreScale != TMR_PRESCALE_VALUE_256) { 
-                            newPWM = true;
-                            appData.PWM_PreScale = TMR_PRESCALE_VALUE_256;
-                            appData.PWM_PSFactor = 256;
-                        }
-                    }
-#ifdef APP_PWM_DEBUG
-                    APP_LCD_WriteSize(0,11,3,appData.PWM_PSFactor);
-#endif //ifdef APP_PWM_DEBUG
-                }
-                // Calculation of Timer Width
-                m = (int)(APP_PBCLK_FREQ / (appData.PWM_PSFactor * appData.PWM_Frequency));
-                if (appData.PWM_Cycle != m) {
-                    newPWM = true;
-                    appData.PWM_Cycle = m;
-                }
-                // POETODO: if any of PWM_Phase1, PWM_Phase1+PWM_Width1, PWM_Phase2, PWM_Phase2+PWM_Width2 > 100% then the MCU gets an invalid value
-                // solution may be based on shifting all values around the corner, not yet implemented
-                // up to 50%, = Phase%, over 50%, = 100% - Phase% (Channels swapped ???)
-                // Calculation of Start1
-                m = (int)((appData.PWM_Cycle * 0.0f / 100.0f) + 1);
-                if (appData.PWM_Start1 != m) {
-                    newPWM = true;
-                    appData.PWM_Start1 = m;
-                }
-                // Calculation of Stop1
-                m = (int)((appData.PWM_Cycle * (0.0f + appData.PWM_Width) / 100.0f) + 1);
-                if (appData.PWM_Stop1 != m) {
-                    newPWM = true;
-                    appData.PWM_Stop1 = m;
-                }
-                // Calculation of Start2
-                m = (int)((appData.PWM_Cycle * appData.PWM_Phase / 100.0f) + 1);
-                if (appData.PWM_Start2 != m) {
-                    newPWM = true;
-                    appData.PWM_Start2 = m;
-                }
-                // Calculation of Stop2
-                m = (int)((appData.PWM_Cycle * (appData.PWM_Phase + appData.PWM_Width2) / 100.0f) + 1);
-                if (appData.PWM_Stop2 != m) {
-                    newPWM = true;
-                    appData.PWM_Stop2 = m;
-                }
-                // Calculation of Start3
-                m = (int)((appData.PWM_Cycle * appData.PWM_Phase2 / 100.0f) + 1);
-                if (appData.PWM_Start3 != m) {
-                    newPWM = true;
-                    appData.PWM_Start3 = m;
-                }
-                // Calculation of Stop3
-                m = (int)((appData.PWM_Cycle * (appData.PWM_Phase2 + appData.PWM_Width3) / 100.0f) + 1);
-                if (appData.PWM_Stop3 != m) {
-                    newPWM = true;
-                    appData.PWM_Stop3 = m;
-                }
-                // Calculation of Start4
-                m = (int)((appData.PWM_Cycle * appData.PWM_Phase3 / 100.0f) + 1);
-                if (appData.PWM_Start4 != m) {
-                    newPWM = true;
-                    appData.PWM_Start4 = m;
-                }
-                // Calculation of Stop4
-                m = (int)((appData.PWM_Cycle * (appData.PWM_Phase3 + appData.PWM_Width4) / 100.0f) + 1);
-                if (appData.PWM_Stop4 != m) {
-                    newPWM = true;
-                    appData.PWM_Stop4 = m;
-                }
-                // Set new timing if needed
-                if (newPWM) {
+                // at least 2Hz
+                if (appData.PWM_Frequency < 2.0f) {appData.PWM_Frequency = 2.0f;}
+                if (PWM_Calculate(
+                            appData.PWM_Frequency
+                        ,   appData.PWM_Width
+                        ,   appData.PWM_Phase
+                        ,   appData.PWM_Width2
+                        ,   appData.PWM_Phase2
+                        ,   appData.PWM_Width3
+                        ,   appData.PWM_Phase3
+                        ,   appData.PWM_Width4
+                        )
+                   ) {
                     // set up Display values
-                    APP_LCD_ClearLine(3);
                     APP_LCD_WriteFrequency(appData.PWM_Foutline,appData.PWM_Foutpos,appData.PWM_Foutwidth,appData.PWM_Frequency);
                     APP_LCD_WritePercent(appData.PWM_Woutline,appData.PWM_Woutpos,appData.PWM_Woutwidth,appData.PWM_Width);
                     APP_LCD_WritePercent(appData.PWM_Poutline,appData.PWM_Poutpos,appData.PWM_Poutwidth,appData.PWM_Phase);
-                    PWM_SetValues( 
-                          appData.PWM_PreScale
-                        , appData.PWM_Cycle
-                        , appData.PWM_Start1
-                        , appData.PWM_Stop1
-                        , appData.PWM_Start2
-                        , appData.PWM_Stop2
-                        , appData.PWM_Start3
-                        , appData.PWM_Stop3
-                        , appData.PWM_Start4
-                        , appData.PWM_Stop4
-                        );
+                    APP_LCD_WritePercent(appData.PWM_W2outline,appData.PWM_W2outpos,appData.PWM_W2outwidth,appData.PWM_Width2);
                 }
 #ifdef APP_USE_PWM2
-                // set PWM only if needed
-                newPWM = false;
-                m = (int)(APP_PBCLK_FREQ / (appData.PWM2_PSFactor * appData.PWM2_Frequency));
-                if ((65535 < m) | (400 > m)){
-                    // Calculation of PreScale frequency * maxwidth must be greater than prescaled timer clock
-                    if (65535 > (APP_PBCLK_FREQ / appData.PWM2_Frequency)) {
-                        // TMR_PRESCALE_VALUE_1 = 0x00,
-                        if (appData.PWM2_PreScale != TMR_PRESCALE_VALUE_1) { 
-                            newPWM = true;
-                            appData.PWM2_PreScale = TMR_PRESCALE_VALUE_1;
-                            appData.PWM2_PSFactor = 1;
-                        }
-                    }
-                    else if (65535 > (APP_PBCLK_FREQ / (2 * appData.PWM2_Frequency))) {
-                        // TMR_PRESCALE_VALUE_2 = 0x01,
-                        if (appData.PWM2_PreScale != TMR_PRESCALE_VALUE_2) { 
-                            newPWM = true;
-                            appData.PWM2_PreScale = TMR_PRESCALE_VALUE_2;
-                            appData.PWM2_PSFactor = 2;
-                        }
-                    }
-                    else if (65535 > (APP_PBCLK_FREQ / (4 * appData.PWM2_Frequency))) {
-                        // TMR_PRESCALE_VALUE_4 = 0x02,
-                        if (appData.PWM2_PreScale != TMR_PRESCALE_VALUE_4) { 
-                            newPWM = true;
-                            appData.PWM2_PreScale = TMR_PRESCALE_VALUE_4;
-                            appData.PWM2_PSFactor = 4;
-                        }
-                    }
-                    else if (65535 > (APP_PBCLK_FREQ / (8 * appData.PWM2_Frequency))) {
-                        // TMR_PRESCALE_VALUE_8 = 0x03,
-                        if (appData.PWM2_PreScale != TMR_PRESCALE_VALUE_8) { 
-                            newPWM = true;
-                            appData.PWM2_PreScale = TMR_PRESCALE_VALUE_8;
-                            appData.PWM2_PSFactor = 8;
-                        }
-                    }
-                    else if (65535 > (APP_PBCLK_FREQ / (16 * appData.PWM2_Frequency))) {
-                        // TMR_PRESCALE_VALUE_16 = 0x04,
-                        if (appData.PWM2_PreScale != TMR_PRESCALE_VALUE_16) { 
-                            newPWM = true;
-                            appData.PWM2_PreScale = TMR_PRESCALE_VALUE_16;
-                            appData.PWM2_PSFactor = 16;
-                        }
-                    }
-                    else if (65535 > (APP_PBCLK_FREQ / (32 * appData.PWM2_Frequency))) {
-                        // TMR_PRESCALE_VALUE_32 = 0x05,
-                        if (appData.PWM2_PreScale != TMR_PRESCALE_VALUE_32) { 
-                            newPWM = true;
-                            appData.PWM2_PreScale = TMR_PRESCALE_VALUE_32;
-                            appData.PWM2_PSFactor = 32;
-                        }
-                    }
-                    else if (65535 > (APP_PBCLK_FREQ / (64 * appData.PWM2_Frequency))) {
-                        // TMR_PRESCALE_VALUE_64 = 0x06,
-                        if (appData.PWM2_PreScale != TMR_PRESCALE_VALUE_64) { 
-                            newPWM = true;
-                            appData.PWM2_PreScale = TMR_PRESCALE_VALUE_64;
-                            appData.PWM2_PSFactor = 64;
-                        }
-                    }
-                    else {
-                        // TMR_PRESCALE_VALUE_256 = 0x07 (lowest)
-                        // at least 2Hz
-                        if (appData.PWM2_Frequency < 2.0f) {appData.PWM2_Frequency = 2.0f;}
-                        if (appData.PWM2_PreScale != TMR_PRESCALE_VALUE_256) { 
-                            newPWM = true;
-                            appData.PWM2_PreScale = TMR_PRESCALE_VALUE_256;
-                            appData.PWM2_PSFactor = 256;
-                        }
-                    }
-#ifdef APP_PWM_DEBUG
-                    APP_LCD_WriteSize(0,15,3,appData.PWM2_PSFactor);
-#endif //ifdef APP_PWM_DEBUG
-                }
-                // Calculation of Timer Width
-                m = (int)(APP_PBCLK_FREQ / (appData.PWM2_PSFactor * appData.PWM2_Frequency));
-                if (appData.PWM2_Cycle != m) {
-                    newPWM = true;
-                    appData.PWM2_Cycle = m;
-                }
-                // Calculation of Start1
-                m = (int)((appData.PWM2_Cycle * 0.0f / 100.0f) + 1);
-                if (appData.PWM2_Start1 != m) {
-                    newPWM = true;
-                    appData.PWM2_Start1 = m;
-                }
-                // Calculation of Stop1
-                m = (int)((appData.PWM2_Cycle * (0.0f + appData.PWM2_Width) / 100.0f) + 1);
-                if (appData.PWM2_Stop1 != m) {
-                    newPWM = true;
-                    appData.PWM2_Stop1 = m;
-                }
-                // Calculation of Start2
-                m = (int)((appData.PWM2_Cycle * appData.PWM2_Phase / 100.0f) + 1);
-                if (appData.PWM2_Start2 != m) {
-                    newPWM = true;
-                    appData.PWM2_Start2 = m;
-                }
-                // Calculation of Stop2
-                m = (int)((appData.PWM2_Cycle * (appData.PWM2_Phase + appData.PWM2_Width2) / 100.0f) + 1);
-                if (appData.PWM2_Stop2 != m) {
-                    newPWM = true;
-                    appData.PWM2_Stop2 = m;
-                }
-                // Set new timing if needed
-                if (newPWM) {
+                if (appData.PWM2_Frequency < 2.0f) {appData.PWM2_Frequency = 2.0f;}
+                if (PWM2_Calculate(
+                            appData.PWM2_Frequency
+                        ,   appData.PWM2_Width
+                        ,   appData.PWM2_Phase
+                        ,   appData.PWM2_Width2
+                        )
+                   ) {
                     // set up Display values
                     APP_LCD_WriteFrequency(appData.PWM2_Foutline,appData.PWM2_Foutpos,appData.PWM2_Foutwidth,appData.PWM2_Frequency);
                     APP_LCD_WritePercent(appData.PWM2_Woutline,appData.PWM2_Woutpos,appData.PWM2_Woutwidth,appData.PWM2_Width);
-                    PWM2_SetValues( 
-                          appData.PWM2_PreScale
-                        , appData.PWM2_Cycle
-                        , appData.PWM2_Start1
-                        , appData.PWM2_Stop1
-                        , appData.PWM2_Start2
-                        , appData.PWM2_Stop2
-                        );
+                    APP_LCD_WritePercent(appData.PWM2_Poutline,appData.PWM2_Poutpos,appData.PWM2_Poutwidth,appData.PWM2_Phase);
+                    APP_LCD_WritePercent(appData.PWM2_W2outline,appData.PWM2_W2outpos,appData.PWM2_W2outwidth,appData.PWM2_Width2);
                 }
 #endif // ifdef APP_USE_PWM2
 #endif // ifdef APP_USE_PWM

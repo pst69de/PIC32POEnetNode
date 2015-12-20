@@ -33,6 +33,12 @@ extern "C" {
 // APP definitions 
 #define APP_BUFFER_SIZE             1024
 #define APP_STRING_SIZE             20
+// poll Inputs in msec
+#define APP_POLL_GRANULARITY        10
+
+// System constants for APP usage
+#define APP_SYSCLK_FREQ             24000000L
+#define APP_PBCLK_FREQ              24000000L
 
 // compiler macros handling POE.net buffers
 // POE.net defines a primary and secondary channel 
@@ -47,10 +53,6 @@ extern "C" {
 #define UART_OUTPUT_BUF             POEnetPrimOutputBuf
 #define UART_OUTPUT_SIZE            POEnetPrimOutputSize
 #define UART_OUTPUT_IDX             POEnetPrimOutputIdx
-
-// System constants for APP usage
-#define APP_SYSCLK_FREQ             24000000L
-#define APP_PBCLK_FREQ              24000000L
 
 // APP's interrupt handling
 #define APP_INT_ID                  INT_ID_0
@@ -214,7 +216,7 @@ extern "C" {
 
 #ifdef APP_USE_ADC
 #define APP_ADC_MEAN_BUFFER    32
-#define APP_ADC_NUM_PINS       4
+#define APP_ADC_NUM_PINS       6
 #define APP_ADC_ID             ADC_ID_1
 #define APP_ADC_CCLK_BASE      APP_PBCLK_FREQ
 #define APP_ADC_CCLK_RATE      4000000L
@@ -245,6 +247,20 @@ extern "C" {
 #define APP_ADC4_PORT_CHANNEL  PORT_CHANNEL_B
 #define APP_ADC4_PIN           PORTS_BIT_POS_12
 #define APP_ADC4_AIPIN         PORTS_ANALOG_PIN_12
+// 5th analog input pin (maybe defined)
+//#undef  APP_ADC5_INPUT_POS
+#define APP_ADC5_INPUT_POS     ADC_INPUT_POSITIVE_AN5
+#define APP_ADC5_PORTS_ID      PORTS_ID_0
+#define APP_ADC5_PORT_CHANNEL  PORT_CHANNEL_B
+#define APP_ADC5_PIN           PORTS_BIT_POS_3
+#define APP_ADC5_AIPIN         PORTS_ANALOG_PIN_5
+// 6th analog input pin (maybe defined)
+//#undef  APP_ADC6_INPUT_POS
+#define APP_ADC6_INPUT_POS     ADC_INPUT_POSITIVE_AN4
+#define APP_ADC6_PORTS_ID      PORTS_ID_0
+#define APP_ADC6_PORT_CHANNEL  PORT_CHANNEL_B
+#define APP_ADC6_PIN           PORTS_BIT_POS_2
+#define APP_ADC6_AIPIN         PORTS_ANALOG_PIN_4
 #else
 // used as indicator for data polling
 #define APP_ADC_NUM_PINS       0
@@ -258,9 +274,9 @@ extern "C" {
 #undef  APP_DI_3
 #undef  APP_DI_4
 #define APP_DI_COUNT     2
-#define APP_DO_1         DIO_PIN_B2
+#define APP_DO_1         DIO_PIN_B5
 #define APP_DO_1_OD
-#define APP_DO_2         DIO_PIN_B3
+#define APP_DO_2         DIO_PIN_B6
 #define APP_DO_2_OD
 #undef  APP_DO_3
 #define APP_DO_3_OD
@@ -272,48 +288,47 @@ extern "C" {
 #ifdef APP_USE_PWM
 // programming with single timer 1st
 #define APP_PWM_TMR_ID            TMR_ID_2
-#define APP_PWM_TMR_PRESCALE      TMR_PRESCALE_VALUE_32
-#define APP_PWM_TMR_PSFactor      32
-#define APP_PWM_TMR_INIT          0x927C // 20Hz
+#define APP_PWM_TMR_PRESCALE      TMR_PRESCALE_VALUE_8
+#define APP_PWM_TMR_PSFactor      8
+#define APP_PWM_TMR_INIT          0x1770 // 500Hz
 #define APP_PWM_TMR_INT_VECTOR    INT_VECTOR_T2
 #define APP_PWM_TMR_INT_SOURCE    INT_SOURCE_TIMER_2
 #define APP_PWM_OC_TMR_BASE       OC_TIMER_16BIT_TMR2
-// OC1 via PPS @ RPB4
-#define APP_PWM_OC1_ID            OC_ID_1
+// OC4 via PPS @ RPA4
+#define APP_PWM_OC1_ID            OC_ID_4
 #define APP_PWM_OC1_PORTS_ID      PORTS_ID_0
-#define APP_PWM_OC1_PORT_CHANNEL  PORT_CHANNEL_B
+#define APP_PWM_OC1_PORT_CHANNEL  PORT_CHANNEL_A
 #define APP_PWM_OC1_PIN           PORTS_BIT_POS_4
 // not an analog pin
 #define APP_PWM_OC1_Mode
-#define APP_PWM_OC1_Function      OUTPUT_FUNC_OC1
-#define APP_PWM_OC1_PPSOut        OUTPUT_PIN_RPB4
-// initial on / off values 5% (0 Phase)
+#define APP_PWM_OC1_Function      OUTPUT_FUNC_OC4
+#define APP_PWM_OC1_PPSOut        OUTPUT_PIN_RPA4
+// initial on / off values 10% (0 Phase)
 #define APP_PWM_OC1_On            0x0001
-#define APP_PWM_OC1_Off           0x0754
-// OC4 via PPS @ RPA4
-#define APP_PWM_OC2_ID            OC_ID_4
+#define APP_PWM_OC1_Off           0x0259
+// OC3 via PPS @ RPA3
+#define APP_PWM_OC2_ID            OC_ID_3
 #define APP_PWM_OC2_PORTS_ID      PORTS_ID_0
 #define APP_PWM_OC2_PORT_CHANNEL  PORT_CHANNEL_A
-#define APP_PWM_OC2_PIN           PORTS_BIT_POS_4
+#define APP_PWM_OC2_PIN           PORTS_BIT_POS_3
 // not an analog pin
 #define APP_PWM_OC2_Mode
-#define APP_PWM_OC2_Function      OUTPUT_FUNC_OC4
-#define APP_PWM_OC2_PPSOut        OUTPUT_PIN_RPA4
-// initial on / off values 5% (Pi/3 Phase)
-#define APP_PWM_OC2_On            0x3057
-#define APP_PWM_OC2_Off           0x37AB
-// OC3 via PPS @ RPA3
-#define APP_PWM_OC3_ID            OC_ID_3
-#define APP_PWM_OC3_PORTS_ID      PORTS_ID_0
-#define APP_PWM_OC3_PORT_CHANNEL  PORT_CHANNEL_A
-#define APP_PWM_OC3_PIN           PORTS_BIT_POS_3
-// not an analog pin
-#define APP_PWM_OC3_Mode
-#define APP_PWM_OC3_Function      OUTPUT_FUNC_OC3
-#define APP_PWM_OC3_PPSOut        OUTPUT_PIN_RPA3
-// initial on / off values 5% (2Pi/3 Phase)
-#define APP_PWM_OC3_On            0x6225
-#define APP_PWM_OC3_Off           0x6979
+#define APP_PWM_OC2_Function      OUTPUT_FUNC_OC3
+#define APP_PWM_OC2_PPSOut        OUTPUT_PIN_RPA3
+// initial on / off values 10% (0 Phase)
+#define APP_PWM_OC2_On            0x0001
+#define APP_PWM_OC2_Off           0x0259
+// OCx via PPS @ RPxy
+// no 3rd phase, used for PWM2
+#undef APP_PWM_OC3_ID
+#undef APP_PWM_OC3_PORTS_ID
+#undef APP_PWM_OC3_PORT_CHANNEL
+#undef APP_PWM_OC3_PIN
+#undef APP_PWM_OC3_Mode
+#undef APP_PWM_OC3_Function
+#undef APP_PWM_OC3_PPSOut
+#undef APP_PWM_OC3_On
+#undef APP_PWM_OC3_Off
 // OCx via PPS @ RPxy
 // no 4th phase, used for PWM2
 #undef APP_PWM_OC4_ID
@@ -328,36 +343,38 @@ extern "C" {
 #ifdef APP_USE_PWM2
 // programming with single timer 1st
 #define APP_PWM2_TMR_ID            TMR_ID_3
-#define APP_PWM2_TMR_PRESCALE      TMR_PRESCALE_VALUE_1
-#define APP_PWM2_TMR_PSFactor      1
-#define APP_PWM2_TMR_INIT          0x0960 // 10kHz
+#define APP_PWM2_TMR_PRESCALE      TMR_PRESCALE_VALUE_8
+#define APP_PWM2_TMR_PSFactor      8
+#define APP_PWM2_TMR_INIT          0x1770 // 500Hz
 #define APP_PWM2_TMR_INT_VECTOR    INT_VECTOR_T3
 #define APP_PWM2_TMR_INT_SOURCE    INT_SOURCE_TIMER_3
 #define APP_PWM2_OC_TMR_BASE       OC_TIMER_16BIT_TMR3
-// OC5 via PPS @ RPA2
-#define APP_PWM2_OC1_ID            OC_ID_5
+// OC1 via PPS @ RPB4
+#define APP_PWM2_OC1_ID            OC_ID_1
 #define APP_PWM2_OC1_PORTS_ID      PORTS_ID_0
-#define APP_PWM2_OC1_PORT_CHANNEL  PORT_CHANNEL_A
-#define APP_PWM2_OC1_PIN           PORTS_BIT_POS_2
+#define APP_PWM2_OC1_PORT_CHANNEL  PORT_CHANNEL_B
+#define APP_PWM2_OC1_PIN           PORTS_BIT_POS_4
+// not an analog pin
 #define APP_PWM2_OC1_Mode
-#define APP_PWM2_OC1_Function      OUTPUT_FUNC_OC5
-#define APP_PWM2_OC1_PPSOut        OUTPUT_PIN_RPA2
-// initial on / off values 50% (0% Phase)
+#define APP_PWM2_OC1_Function      OUTPUT_FUNC_OC1
+#define APP_PWM2_OC1_PPSOut        OUTPUT_PIN_RPB4
+// initial on / off values 10% (0 Phase)
 #define APP_PWM2_OC1_On            0x0001
-#define APP_PWM2_OC1_Off           0x04B1
-// OCx via PPS @ RPxy (you can share up to 5 OCs, 3+2 is maxing this out)
-#undef APP_PWM2_OC2_ID
-#undef APP_PWM2_OC2_PORTS_ID
-#undef APP_PWM2_OC2_PORT_CHANNEL
-#undef APP_PWM2_OC2_PIN
-#undef APP_PWM2_OC2_Mode
-#undef APP_PWM2_OC2_Function
-#undef APP_PWM2_OC2_PPSOut
-#undef APP_PWM2_OC2_On
-#undef APP_PWM2_OC2_Off
+#define APP_PWM2_OC1_Off           0x0259
+// OC5 via PPS @ RPA2
+#define APP_PWM2_OC2_ID            OC_ID_5
+#define APP_PWM2_OC2_PORTS_ID      PORTS_ID_0
+#define APP_PWM2_OC2_PORT_CHANNEL  PORT_CHANNEL_A
+#define APP_PWM2_OC2_PIN           PORTS_BIT_POS_2
+#define APP_PWM2_OC2_Mode
+#define APP_PWM2_OC2_Function      OUTPUT_FUNC_OC5
+#define APP_PWM2_OC2_PPSOut        OUTPUT_PIN_RPA2
+// initial on / off values 10% (0% Phase)
+#define APP_PWM2_OC2_On            0x0001
+#define APP_PWM2_OC2_Off           0x0259
 #endif // ifdef APP_USE_PWM2
-#define APP_PWM_DEBUG
-//#undef  APP_PWM_DEBUG
+//#define APP_PWM_DEBUG
+#undef  APP_PWM_DEBUG
 #endif // ifdef APP_USE_PWM
 
 #ifdef	__cplusplus

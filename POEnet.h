@@ -48,8 +48,9 @@ extern const char POEnet_width4[];
 extern const char POEnet_text[];
 extern const char POEnet_action[];
 
-
+/* POEnet_Node_Init, POEnet_AddAnalog, POEnet_AddDigital, POEnet_AddSwitch, POEnet_AddPWM, POEnet_AddPWM2, POEnet_AddPWM3, POEnet_AddPWM4 */
 void POEnet_Node_Init(int *id, char *name, int *hours, int *minutes, int *seconds);
+// POETODO: split Init in id-Init, Timer-Init, Debug/Cmd-Init
 
 void POEnet_AddAnalog(int id, float *Value, float *numerator, float *denominator, float *offset, char *unit);
 void POEnet_AddDigital(int id, int *Value, char *loVal, char *hiVal);
